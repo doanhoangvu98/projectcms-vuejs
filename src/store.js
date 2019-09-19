@@ -32,17 +32,16 @@ export default new Vuex.Store({
         login({commit}, data) {
             return new Promise((resolve, reject) => {
                 commit('loginStart');
-                commit('auth_request');
-                axios.post('https://reqres.in/api/login', {
+                axios.post('http://localhost:3000/v1/sessions', {
                     ...data
                 })
                 .then(response => {
-                    const accessToken = response.data.token;
+                    const accessToken = response.data.authentication_token;
                     localStorage.setItem('accessToken', accessToken);
-                    axios.defaults.headers.common['Authorization'] = accessToken
+                    axios.defaults.headers.common['Authorization'] = "accessToken"
                     commit('loginStop', null);
                     commit('updateAccessToken', accessToken);
-                    resolve(true)
+                    resolve(response)
                 })
                 .catch(error => {
                     commit('loginStop', error.response.data.error);
