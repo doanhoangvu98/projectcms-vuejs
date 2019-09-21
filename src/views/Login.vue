@@ -6,11 +6,16 @@
         <p v-if="loginError">{{ loginError }}</p>
         <p v-if="accessToken">Login Successful</p>
         <form @submit.prevent="loginSubmit">
+          <p if="errors.length">
+            <ul>
+              <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
+            </ul>
+          </p>
           <div class="field">
             <div class="control has-icons-left">
               <label for="" class="label">Email</label>
               <div class="control has-icons-left">
-                <input type="email" placeholder="e.g. bobsmith@gmail.com" class="input"  v-model="email">
+                <input type="email" placeholder="e.g. vu@gmail.com" class="input" v-model="email">
             </div>
             </div>
           </div>
@@ -38,7 +43,14 @@
     data() {
       return {
         email: '',
-        password: ''
+        password: '',
+        errors: [],
+        errorMessage: {
+          message1: "Email or Password is missing. Please try again!",
+          message2: "Please enter your email!",
+          message3: "Please enter your password!",
+          message4: "Email or Password incorrect!"
+        }
       }
     },
     computed: {
@@ -54,14 +66,23 @@
         'login'
       ]),
       loginSubmit() {
+        this.errors = [];
         let email = this.email;
         let password = this.password;
         this.$store.dispatch('login', { email, password
         }).then(() => {
-          //console.log(response);
+          alert("Welcome "+this.email);
           this.$router.push({ path: '/admin'});
-        }).catch((error) => {
-            //console.log(error);
+        }).catch((e) => {
+          if(!this.email && !this.password){
+            this.errors.push(this.errorMessage.message1)
+          }else if(!this.email){
+            this.errors.push(this.errorMessage.message2)
+          } else if(!this.password){
+            this.errors.push(this.errorMessage.message3)
+          } else{
+            this.errors.push(this.errorMessage.message)
+          }
         })
       }
     },
