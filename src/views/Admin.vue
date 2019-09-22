@@ -1,13 +1,21 @@
 <template>
-  <div class="container">
-    <h2 class="is-title">Admin page</h2>
-    <span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span>
-  </div>
+   <div class="d-flex" id="wrapper">
+     <Sidebar></Sidebar>
+     <Pagecontent></Pagecontent>
+   </div>
 </template>
 
 <script>
+
+import Sidebar from "./../components/sidebar"
+import Pagecontent from "./../components/pagecontent"
+
   export default {
       name: 'admin',
+      components: {
+        Sidebar,
+        Pagecontent
+      },
       computed: {
         isLoggedIn: function(){
           return this.$store.getters.isLoggedIn
