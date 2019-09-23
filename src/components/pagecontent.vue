@@ -26,11 +26,23 @@
 
 <script>
 export default {
+  data(){
+    return {
+      role: ''
+    }
+  },
+  // mounted: function(){
+  //   this.setrole()
+  // },
   methods: {
+    setrole: function(){
+      let user = JSON.parse(localStorage.getItem('user'))
+      // this.role = user.role
+    },
     logout: function(){
       this.$store.dispatch('logout')
       .then(() => {
-        this.$router.push({ path: '/login'});
+        this.$router.push({ path: '/login'})
       })
     }
   }

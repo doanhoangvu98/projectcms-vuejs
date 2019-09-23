@@ -25,6 +25,7 @@
         email: '',
         password: '',
         errors: [],
+        user: {},
         errorMessage: {
           message1: "Email or Password is missing. Please try again!",
           message2: "Please enter your email!",
@@ -37,12 +38,12 @@
       ...mapState([
         'loggingIn',
         'loginError',
-        'accessToken'
+        'token'
       ])
     },
     methods: {
       ...mapActions([
-        'fetchAccessToken',
+        'fetchToken',
         'login'
       ]),
       loginSubmit() {
@@ -50,9 +51,22 @@
         let email = this.email;
         let password = this.password;
         this.$store.dispatch('login', { email, password
-        }).then(() => {
-          alert("Welcome "+this.email);
+        }).then((response)=> {
+          //const role = response.data.role;
           this.$router.push({ path: '/admin'});
+          // if(role === 'admin'){
+          //   alert("Hello "+ role);
+          //   this.$router.push({ path: '/admin'});
+          // } else if (role == 'editor') {
+          //   alert("Hello "+ role);
+          //   this.$router.push({ path: '/editor'});
+          // }else if (role == 'contributor') {
+          //   alert("Hello "+ role);
+          //   this.$router.push({ path: '/contributor'});
+          // } else {
+          //   alert("You do have not permisson to login");
+          //   this.$router.push({ path: '/login'});
+          // }
         }).catch((e) => {
           if(!this.email && !this.password){
             this.errors.push(this.errorMessage.message1)
@@ -67,7 +81,7 @@
       }
     },
     created() {
-      this.fetchAccessToken();
+      this.fetchToken();
     }
   }
 </script>

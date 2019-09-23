@@ -1,19 +1,19 @@
 <template>
    <div class="d-flex" id="wrapper">
-     <SidebarAdmin></SidebarAdmin>
+     <SidebarContributor></SidebarContributor>
      <Pagecontent></Pagecontent>
    </div>
 </template>
 
 <script>
 
-import SidebarAdmin from "./../components/sidebaradmin"
+import SidebarContributor from "./../components/sidebarcontributor"
 import Pagecontent from "./../components/pagecontent"
 
   export default {
       name: 'admin',
       components: {
-        SidebarAdmin,
+        SidebarContributor,
         Pagecontent
       }
   }

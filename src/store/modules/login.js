@@ -2,9 +2,9 @@ import axios from 'axios'
 
 axios.defaults.baseURL = 'http://localhost:3000/v1'
 
-export default{
+export default {
     state: {
-        accessToken: localStorage.getItem('accessToken') || '',
+        token: localStorage.getItem('token') || '',
         loggingIn: false,
         loginError: null,
         status: ''
@@ -15,46 +15,52 @@ export default{
             state.loggingIn = false;
             state.loginError = errorMessage;
         },
-        updateAccessToken: (state, accessToken) => {
-            state.accessToken = accessToken;
+        updateToken: (state, token) => {
+            state.token = token;
         },
         logout: (state) => {
-            state.accessToken = '';
+            state.token = '';
         }
     },
     getters: {
-        isLoggedIn: state => !!state.accessToken
+        isLoggedIn: state => !!state.token
     },
     actions: {
         login({ commit }, data) {
             return new Promise((resolve, reject) => {
                 commit('loginStart');
-                axios.post('sessions', {
-                    ...data
+                axios.post('users/sign_in', data)
+                .then(response => {
+                    const token = response.data.token;
+                    localStorage.setItem('token', token);
+                    axios.defaults.headers.common['Authorization'] = "token"
+                    commit('loginStop', null);
+                    commit('updateToken', token);
+                    resolve(response)
                 })
-                    .then(response => {
-                        const accessToken = response.data.authentication_token;
-                        localStorage.setItem('accessToken', accessToken);
-                        axios.defaults.headers.common['Authorization'] = "accessToken"
-                        commit('loginStop', null);
-                        commit('updateAccessToken', accessToken);
-                        resolve(response)
-                    })
-                    .catch(error => {
-                        commit('loginStop', error.response.data.error);
-                        localStorage.removeItem('accessToken')
-                        reject(false)
-                    })
+                .catch(error => {
+                    commit('loginStop', error.response.data.error);
+                    localStorage.removeItem('token')
+                    reject(false)
+                })
             })
         },
-        fetchAccessToken({ commit }) {
-            commit('updateAccessToken', localStorage.getItem('accessToken'));
+        fetchToken({ commit }) {
+            commit('updateToken', localStorage.getItem('token'));
         },
         logout({ commit }) {
             return new Promise((resolve, reject) => {
                 commit('logout');
-                localStorage.removeItem('accessToken');
-                resolve();
+                axios.get('users/sign_out')
+                .then(response => {
+                    localStorage.removeItem('token');
+                    delete axios.defaults.headers.common['Authorization']
+                    resolve(resolve);
+                })
+                .catch(error => {
+                    //location.reload();
+                    reject(error);
+                })
             })
         }
     }
