@@ -43,7 +43,6 @@
     },
     methods: {
       ...mapActions([
-        'fetchToken',
         'login'
       ]),
       loginSubmit() {
@@ -80,9 +79,6 @@
         })
       }
     },
-    created() {
-      this.fetchToken();
-    }
   }
 </script>
 

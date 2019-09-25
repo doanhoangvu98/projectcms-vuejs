@@ -30,19 +30,19 @@ export default {
             return new Promise((resolve, reject) => {
                 commit('loginStart');
                 axios.post('users/sign_in', data)
-                .then(response => {
-                    const token = response.data.token;
-                    localStorage.setItem('token', token);
-                    axios.defaults.headers.common['Authorization'] = "token"
-                    commit('loginStop', null);
-                    commit('updateToken', token);
-                    resolve(response)
-                })
-                .catch(error => {
-                    commit('loginStop', error.response.data.error);
-                    localStorage.removeItem('token')
-                    reject(false)
-                })
+                    .then(response => {
+                        const token = response.data.token;
+                        localStorage.setItem('token', token);
+                        axios.defaults.headers.common['Authorization'] = "token"
+                        commit('loginStop', null);
+                        commit('updateToken', token);
+                        resolve(response)
+                    })
+                    .catch(error => {
+                        commit('loginStop', error.response.data.error);
+                        localStorage.removeItem('token')
+                        reject(false)
+                    })
             })
         },
         fetchToken({ commit }) {
@@ -52,15 +52,15 @@ export default {
             return new Promise((resolve, reject) => {
                 commit('logout');
                 axios.get('users/sign_out')
-                .then(response => {
-                    localStorage.removeItem('token');
-                    delete axios.defaults.headers.common['Authorization']
-                    resolve(resolve);
-                })
-                .catch(error => {
-                    //location.reload();
-                    reject(error);
-                })
+                    .then(response => {
+                        localStorage.removeItem('token');
+                        delete axios.defaults.headers.common['Authorization']
+                        resolve(response);
+                    })
+                    .catch(error => {
+                        //location.reload();
+                        reject(error);
+                    })
             })
         }
     }
