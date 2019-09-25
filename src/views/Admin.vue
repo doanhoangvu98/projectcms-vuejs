@@ -2,22 +2,25 @@
   <div class="d-flex" id="wrapper">
     <Menu></Menu>
     <SidebarAdmin></SidebarAdmin>
-    <Pagecontent></Pagecontent>
+    <!-- <CreatePage></CreatePage> -->
+    <UpdatePage></UpdatePage>
   </div>
 </template>
 
 <script>
 
 import SidebarAdmin from "./../components/SidebarAdmin"
-import Pagecontent from "./../components/Content"
+import CreatePage from "./../components/release_numbers/Create"
+import UpdatePage from "./../components/release_numbers/Update"
 import Menu from "./../components/Menu"
 
-  export default {
-      name: 'admin',
-      components: {
-        SidebarAdmin,
-        Pagecontent,
-        Menu
-      }
+export default {
+  name: 'admin',
+  components: {
+    Menu,
+    SidebarAdmin,
+    // CreatePage,
+    UpdatePage
   }
+}
 </script>

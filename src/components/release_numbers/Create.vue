@@ -6,7 +6,7 @@
           <form>
             <div class="form-group">
               <label for="releasenumber">発売号名</label>
-              <input type="text" class="form-control" id="releasenumber" placeholder="2019年04月12日号">
+              <input type="text" class="form-control" id="datepicker" placeholder="2019年04月12日号">
             </div>
             <div class="form-group">
               <label for="releasenumber">発売号画像</label>
@@ -36,15 +36,18 @@ export default {
 
 }
 </script>
+
 <script>
 $(function() {
   $("#my-dropzone").dropzone({
     //url: "/file/post", // If not using a form element
   });
-
+  $('#datepicker').datepicker({
+        uiLibrary: 'bootstrap4'
+  });
 });
-
 </script>
+
 <style>
   #add, #cancel, label{
     float: left;
