@@ -2,6 +2,13 @@ import axios from 'axios'
 
 axios.defaults.baseURL = 'http://localhost:3000/v1'
 
+// const token = localStorage.getItem('token')
+// //console.log(token)
+// if (token != undefined) {
+//     console.log(token)
+//     axios.defaults.headers.common['Authorization'] = token
+// }
+
 export default {
     state: {
         token: localStorage.getItem('token') || '',
@@ -33,7 +40,8 @@ export default {
                     .then(response => {
                         const token = response.data.token;
                         localStorage.setItem('token', token);
-                        axios.defaults.headers.common['Authorization'] = "token"
+                        axios.defaults.headers.common['Authorization'] = token
+                        console.log(token)
                         commit('loginStop', null);
                         commit('updateToken', token);
                         resolve(response)
@@ -50,9 +58,10 @@ export default {
         },
         logout({ commit }) {
             return new Promise((resolve, reject) => {
-                commit('logout');
+                //commit('logout');
                 axios.get('users/sign_out')
                     .then(response => {
+                        const token = response.data.token;
                         localStorage.removeItem('token');
                         delete axios.defaults.headers.common['Authorization']
                         resolve(response);

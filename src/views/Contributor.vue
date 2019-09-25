@@ -7,8 +7,8 @@
 
 <script>
 
-import SidebarContributor from "./../components/sidebarcontributor"
-import Pagecontent from "./../components/pagecontent"
+import SidebarContributor from "./../components/SidebarContributor"
+import Pagecontent from "./../components/Content"
 
   export default {
       name: 'admin',

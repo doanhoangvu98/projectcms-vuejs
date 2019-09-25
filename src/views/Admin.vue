@@ -1,20 +1,23 @@
 <template>
-   <div class="d-flex" id="wrapper">
-     <SidebarAdmin></SidebarAdmin>
-     <Pagecontent></Pagecontent>
-   </div>
+  <div class="d-flex" id="wrapper">
+    <Menu></Menu>
+    <SidebarAdmin></SidebarAdmin>
+    <Pagecontent></Pagecontent>
+  </div>
 </template>
 
 <script>
 
-import SidebarAdmin from "./../components/sidebaradmin"
-import Pagecontent from "./../components/pagecontent"
+import SidebarAdmin from "./../components/SidebarAdmin"
+import Pagecontent from "./../components/Content"
+import Menu from "./../components/Menu"
 
   export default {
       name: 'admin',
       components: {
         SidebarAdmin,
-        Pagecontent
+        Pagecontent,
+        Menu
       }
   }
 </script>

@@ -10,6 +10,7 @@ import store from "./../store/index.js"
 
 
 const routes = [
+    { path: '/', component: LoginPage },
     { path: '/login', component: LoginPage },
     {
         path: '/admin',
