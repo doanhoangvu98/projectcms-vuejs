@@ -4,13 +4,15 @@ import App from './App.vue'
 import VueRouter from 'vue-router'
 import LoginPage from "./views/Login.vue"
 import AdminPage from "./views/Admin.vue"
+import NotfoundPage from "./views/404page.vue"
 import Axios from 'axios'
 
-import Buefy from 'buefy'
-import 'buefy/dist/buefy.css'
-import store from "./store"
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import "@fortawesome/fontawesome-free/css/all.css"
+import '@fortawesome/fontawesome-free/js/all.js'
+import store from "./store/index.js"
 
-Vue.use(Buefy)
 Vue.use(Vuex)
 Vue.use(VueRouter)
 
@@ -30,6 +32,7 @@ const router = new VueRouter({
         requiresAuth: true
       }
     },
+    { path: '/notfound', component: NotfoundPage },
     { path: '*', redirect: '/' }
   ]
 });

@@ -1,38 +1,18 @@
 <template>
-  <div class="container">
-    <div class="columns is-centered">
-      <div class="column is-5-tablet is-4-desktop is-3-widescreen box">
-        <h2 class="title">LOGIN</h2>
-        <p v-if="loginError">{{ loginError }}</p>
-        <p v-if="accessToken">Login Successful</p>
-        <form @submit.prevent="loginSubmit">
-          <p if="errors.length">
-            <ul>
-              <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
-            </ul>
-          </p>
-          <div class="field">
-            <div class="control has-icons-left">
-              <label for="" class="label">Email</label>
-              <div class="control has-icons-left">
-                <input type="email" placeholder="e.g. vu@gmail.com" class="input" v-model="email">
-            </div>
-            </div>
-          </div>
-          <div class="field">
-            <div class="control has-icons-left">
-             <label for="" class="label">Password</label>
-              <div class="control has-icons-left">
-                <input type="password" placeholder="*******" class="input"  v-model="password">
-            </div>
-          </div>
-          </div>
-          <div class="field">
-           <input class="button is-success" type="submit" value="Login">
-          </div>
-        </form>
-      </div>
-    </div>
+  <div class="text-center" id="login">
+    <form class="form-signin" @submit.prevent="loginSubmit">
+      <h1 class="h3 mb-3 font-weight-normal">LOGIN</h1>
+	    <p if="errors.length">
+        <ul>
+          <li v-for="error in errors" v-bind:key="error">{{ error }}</li>
+        </ul>
+      </p>
+      <label for="inputEmail" class="sr-only">Email address</label>
+      <input type="email" id="inputEmail" class="form-control" placeholder="Email address" v-model="email" autofocus>
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" id="inputPassword" class="form-control" placeholder="Password" v-model="password">
+      <button class="btn btn-lg btn-primary btn-block" type="submit" value="Login">Login</button>
+    </form>
   </div>
 </template>
 
@@ -81,7 +61,7 @@
           } else if(!this.password){
             this.errors.push(this.errorMessage.message3)
           } else{
-            this.errors.push(this.errorMessage.message)
+            this.errors.push(this.errorMessage.message4)
           }
         })
       }
@@ -91,3 +71,47 @@
     }
   }
 </script>
+
+<style>
+#login {
+  margin-top: 8em;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #ffffff;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+ul{
+  list-style: none;
+  text-align: left;
+}
+</style>

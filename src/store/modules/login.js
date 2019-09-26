@@ -1,11 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 import axios from 'axios'
-import { Promise } from 'q';
 
-Vue.use(Vuex)
+axios.defaults.baseURL = 'http://localhost:3000/v1'
 
-export default new Vuex.Store({
+export default{
     state: {
         accessToken: localStorage.getItem('accessToken') || '',
         loggingIn: false,
@@ -29,26 +26,26 @@ export default new Vuex.Store({
         isLoggedIn: state => !!state.accessToken
     },
     actions: {
-        login({commit}, data) {
+        login({ commit }, data) {
             return new Promise((resolve, reject) => {
                 commit('loginStart');
-                axios.post('http://localhost:3000/v1/sessions', {
+                axios.post('sessions', {
                     ...data
                 })
-                .then(response => {
-                    const accessToken = response.data.authentication_token;
-                    localStorage.setItem('accessToken', accessToken);
-                    axios.defaults.headers.common['Authorization'] = "accessToken"
-                    commit('loginStop', null);
-                    commit('updateAccessToken', accessToken);
-                    resolve(response)
-                })
-                .catch(error => {
-                    commit('loginStop', error.response.data.error);
-                    localStorage.removeItem('accessToken')
-                    reject(false)
-                })
-            })           
+                    .then(response => {
+                        const accessToken = response.data.authentication_token;
+                        localStorage.setItem('accessToken', accessToken);
+                        axios.defaults.headers.common['Authorization'] = "accessToken"
+                        commit('loginStop', null);
+                        commit('updateAccessToken', accessToken);
+                        resolve(response)
+                    })
+                    .catch(error => {
+                        commit('loginStop', error.response.data.error);
+                        localStorage.removeItem('accessToken')
+                        reject(false)
+                    })
+            })
         },
         fetchAccessToken({ commit }) {
             commit('updateAccessToken', localStorage.getItem('accessToken'));
@@ -61,4 +58,4 @@ export default new Vuex.Store({
             })
         }
     }
-})
+}
