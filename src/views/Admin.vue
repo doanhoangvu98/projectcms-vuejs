@@ -3,7 +3,8 @@
     <Menu></Menu>
     <SidebarAdmin></SidebarAdmin>
     <!-- <CreatePage></CreatePage> -->
-    <UpdatePage></UpdatePage>
+    <!-- <UpdatePage></UpdatePage> -->
+    <ManagementPage></ManagementPage>
   </div>
 </template>
 
@@ -12,6 +13,7 @@
 import SidebarAdmin from "./../components/SidebarAdmin"
 import CreatePage from "./../components/release_numbers/Create"
 import UpdatePage from "./../components/release_numbers/Update"
+import ManagementPage from "./../components/release_numbers/Management"
 import Menu from "./../components/Menu"
 
 export default {
@@ -20,7 +22,8 @@ export default {
     Menu,
     SidebarAdmin,
     // CreatePage,
-    UpdatePage
+    //UpdatePage
+    ManagementPage
   }
 }
 </script>
