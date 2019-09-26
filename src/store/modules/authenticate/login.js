@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-axios.defaults.baseURL = 'http://localhost:3000/v1'
+axios.defaults.baseURL = 'http://localhost:3000/'
 
 // const token = localStorage.getItem('token')
 // //console.log(token)
@@ -50,6 +50,7 @@ export default {
                     commit('loginStop', error.response.data.error);
                     localStorage.removeItem('token')
                     reject(false)
+                    // console.log(error)
                 })
             })
         },
@@ -58,16 +59,15 @@ export default {
         },
         logout({ commit }) {
             return new Promise((resolve, reject) => {
-                //commit('logout');
+                commit('logout');
                 axios.get('users/sign_out')
                 .then(response => {
-                    const token = response.data.token;
                     localStorage.removeItem('token');
                     delete axios.defaults.headers.common['Authorization']
                     resolve(response);
                 })
                 .catch(error => {
-                    //location.reload();
+                    // location.reload();
                     reject(error);
                 })
             })

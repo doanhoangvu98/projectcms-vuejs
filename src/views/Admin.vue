@@ -4,7 +4,8 @@
     <SidebarAdmin></SidebarAdmin>
     <!-- <CreatePage></CreatePage> -->
     <!-- <UpdatePage></UpdatePage> -->
-    <ManagementPage></ManagementPage>
+    <!-- <ManagementPage></ManagementPage> -->
+    <router-view></router-view>
   </div>
 </template>
 
@@ -23,7 +24,8 @@ export default {
     SidebarAdmin,
     // CreatePage,
     //UpdatePage
-    ManagementPage
+    // ManagementPage
+    CreatePage
   }
 }
 </script>

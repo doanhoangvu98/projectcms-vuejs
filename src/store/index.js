@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios'
 import { Promise } from 'q';
-import login from './modules/login';
+import login from './modules/authenticate/login';
 
 Vue.use(Vuex);
 

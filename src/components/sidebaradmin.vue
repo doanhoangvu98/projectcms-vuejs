@@ -1,9 +1,12 @@
 <template>
   <div class="bg-light border-right" id="sidebar-wrapper">
     <div class="list-group list-group-flush"> 
-      <a href="#" class="list-group-item list-group-item-action bg-light" id="releasenumber">
+      <router-link :to="{ path: 'admin/release'}" class="list-group-item list-group-item-action bg-light" 
+        id="releasenumber"> <i class="fa fa-caret-right" aria-hidden="true"></i> 発売号一覧管理
+      </router-link>
+      <!-- <a href="#" class="list-group-item list-group-item-action bg-light" id="releasenumber">
         <i class="fa fa-caret-right" aria-hidden="true"></i> 発売号一覧管理
-      </a>
+      </a> -->
       <a href="#" class="list-group-item list-group-item-action bg-light" id="useradmin">
         <i class="fa fa-caret-right" aria-hidden="true"></i> アドミンユーザー管理
       </a>

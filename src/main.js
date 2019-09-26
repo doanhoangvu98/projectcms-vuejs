@@ -8,6 +8,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import "@fortawesome/fontawesome-free/css/all.css"
 import '@fortawesome/fontawesome-free/js/all.js'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
+import 'vue2-dropzone/dist/vue2Dropzone.js'
 import store from "./store/index.js"
 import router from "./router/router"
 

@@ -6,14 +6,17 @@
           <form>
             <div class="form-group">
               <label for="releasenumber">発売号名</label>
-              <input type="text" class="form-control" id="datepicker" placeholder="2019年04月12日号">
+              <input type="text" class="form-control" id="datepicker" v-model="daterelease">
+              <input  id="inputEmail" class="form-control" placeholder="メールの入力" v-model="email" autofocus>
             </div>
             <div class="form-group">
               <label for="releasenumber">発売号画像</label>
               <div class="custom-file">
-                <form action="/file-upload" class="dropzone dz-clickable" id="dropzone">
+                <form action="/file-upload" class="dropzone dz-clickable">
                   <div class="dz-message d-flex flex-column">
-                    <i class="material-icons text-muted">cloud_upload</i>
+                    <i class="material-icons text-muted">cloud_upload
+                    </i>
+                    <!-- <input type="file" id="myFile" name="filename2" :v-model="filename" class="dz-message d-flex flex-column"></input> -->
                     ここに画像ドラッグ
                   </div>
                 </form>
@@ -23,8 +26,9 @@
               <label>形容</label>
               <textarea class="form-control" rows="5" placeholder="形容の入力"></textarea>
             </div>
-            <button id="add" type="submit" class="btn btn-primary">保存</button>
+            <button id="add" type="submit" class="btn btn-primary" @click="uploadimage()">保存</button>
             <button id="cancel" type="submit" class="btn btn-danger">キャンセル</button>
+            <!-- <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone> -->
           </form>
         </div>
       </div>
@@ -32,8 +36,35 @@
 </template>
 
 <script>
+import vueDropzone from "vue2-dropzone";
 export default {
+  methods: {
+    uploadimage(){
 
+    }
+  },
+  data() {
+    return {
+        // filename: '',
+        daterelease: 'uhbhbhub',
+        email: ''
+    }
+
+  }
+  // name: 'app',
+  // components: {
+  //   vueDropzone: vue2Dropzone
+  // },
+  // data: function () {
+  //   return {
+  //     dropzoneOptions: {
+  //         url: 'https://httpbin.org/post',
+  //         thumbnailWidth: 150,
+  //         maxFilesize: 0.5,
+  //         headers: { "My-Awesome-Header": "header value" }
+  //     }
+  //   }
+  // }
 }
 </script>
 
@@ -41,9 +72,11 @@ export default {
 $(function() {
   $("#my-dropzone").dropzone({
     //url: "/file/post", // If not using a form element
+    
   });
   $('#datepicker').datepicker({
-        uiLibrary: 'bootstrap4'
+    uiLibrary: 'bootstrap4', 
+    format: 'yyyy/mm/dd'
   });
 });
 </script>
