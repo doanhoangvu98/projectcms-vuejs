@@ -1,6 +1,6 @@
 <template>
   <div class="col-sm-6 offset-sm-3 text-center" id="login">
-    <form class="form-signin form-group" @submit.prevent="loginSubmit">
+    <form class="form-signin form-group" @submit.prevent="loginSubmit(event)">
       <h2 class="h3 mb-3 font-weight-normal" id="title">総合ジャーナル</h2>
 	    <p if="errors.length">
         <ul>
@@ -23,8 +23,7 @@
 </template>
 
 <script>
-  import { mapState, mapActions } from 'vuex';
-
+import VueSweetalert from './../services/SweetAlert'
   export default {
     data() {
       return {
@@ -44,19 +43,8 @@
         }
       }
     },
-    computed: {
-      ...mapState([
-        'loggingIn',
-        'loginError',
-        'token'
-      ])
-    },
     methods: {
-      ...mapActions([
-        'login',
-        'fetchToken'
-      ]),
-      loginSubmit:  function (e) {
+      loginSubmit: function (event) {
         let email = this.email;
         let password = this.password;
         this.errors = [];
@@ -78,18 +66,18 @@
             this.errors.push(this.errorMessage.message6)
           } 
           if(this.errors.length != 0) {
-            e.preventDefault();
+            event.preventDefault();
           }
         this.$store.dispatch('login', { email, password
         }).then((response)=> {
-          this.$router.push({ path: '/admin'});
+          this.$router.push({ path: '/dashboard'});
+          window.location.reload()
+          VueSweetalert.success()
         }).catch((e) => {
           this.errors.push(this.errorMessage.message4)
+          VueSweetalert.failure()
         })
       },
-      created() {
-        this.fetchToken();
-      }
     }
   }
 </script>
@@ -114,7 +102,9 @@
     box-sizing: border-box;
     height: auto;
     padding: 10px;
-    font-size: 16px;
+    font-size: 14px;
+    border: 1px solid #000000;
+    border-radius: 0%;
   }
   .form-signin .form-control:focus {
     z-index: 2;
@@ -136,10 +126,15 @@
   li {
     font-size: 15px;
     font-weight: bold;
-    color: #ff0000; /* or whatever color you prefer */
+    color: #ff0000;
   }
   #title{
     padding-bottom: 20px;
     font-weight: bold;
+  }
+  #submit{
+    background-color: #5b9bd5;
+    border: 1px solid #000000;
+    border-radius: 0%;
   }
 </style>

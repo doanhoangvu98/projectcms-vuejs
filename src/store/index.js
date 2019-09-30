@@ -1,13 +1,22 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from 'vue'
+import Vuex from 'vuex'
 import axios from 'axios'
-import { Promise } from 'q';
-import login from './modules/authenticate/login';
+import userservice from './modules/authenticate/user'
+import release from "./modules/release/release_service"
+import createPersistedState from 'vuex-persistedstate' //
+import * as Cookies from 'js-cookie'
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
-        login,
-    }
+        userservice,
+        release,
+    },
+    plugins: [
+        createPersistedState({
+            getState: (key) => Cookies.getJSON(key),
+            setState: (key, state) => Cookies.set(key, state, { expires: 3, secure: false })
+        })
+    ]
 });

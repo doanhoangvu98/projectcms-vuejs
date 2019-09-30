@@ -12,7 +12,8 @@
             aria-haspopup="true" aria-expanded="false">狩野
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" @click="logout">Logout</a>
+            <!-- <a class="dropdown-item" @click="logout">Logout</a> -->
+            <span v-if="isLoggedIn"><a class="dropdown-item" @click="logout">ログアウト</a></span>
           </div>
         </li>
       </ul>
@@ -22,16 +23,21 @@
 
 <script>
 export default {
+  computed: {
+    isLoggedIn : function(){ return this.$store.getters.isLoggedIn}
+  },
   methods: {
-  logout: function () {
+  logout() {
+    //console.log(this.$store.getters.isLoggedIn)
     this.$store.dispatch('logout')
     .then(() => {
+      //console.log(this.$store.getters.isLoggedIn)
       this.$router.push('/login')
     })
     },
     check_authen(){
       this.$store.dispatch('check_authen')
-      .the(() => {
+      .then(() => {
         this.$router.push('/admin')
       })
     }
@@ -41,7 +47,7 @@ export default {
 
 <style>
   nav {
-    background-color: #0095ff;
+    background-color:#5B9BD5;
   }
   a.navbar-brand {
     color: #fff;

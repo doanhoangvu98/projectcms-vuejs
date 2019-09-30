@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex" id="wrapper">
     <Menu></Menu>
-    <SidebarAdmin></SidebarAdmin>
+    <Sidebar></Sidebar>
     <!-- <CreatePage></CreatePage> -->
     <!-- <UpdatePage></UpdatePage> -->
     <!-- <ManagementPage></ManagementPage> -->
@@ -11,21 +11,21 @@
 
 <script>
 
-import SidebarAdmin from "./../components/SidebarAdmin"
+import Sidebar from "./../components/Sidebar"
 import CreatePage from "./../components/release_numbers/Create"
 import UpdatePage from "./../components/release_numbers/Update"
 import ManagementPage from "./../components/release_numbers/Management"
 import Menu from "./../components/Menu"
 
 export default {
-  name: 'admin',
+  name: 'dashboard',
   components: {
     Menu,
-    SidebarAdmin,
+    Sidebar,
     // CreatePage,
     //UpdatePage
     // ManagementPage
-    CreatePage
+    //CreatePage
   }
 }
 </script>
