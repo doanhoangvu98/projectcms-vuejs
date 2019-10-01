@@ -11,7 +11,7 @@
           <tbody v-for="(release,index) in release_numbers" :key="release.id" :release="release" :index="index">
             <tr>
               <td class="colstyle1 id">{{index+1}}</td>
-              <td scope="row" class="colstyle2"><h5>{{ release.name }}</h5></td>
+              <td scope="row" class="colstyle2"><h5>{{ customFormatDate(release.name)  }}</h5></td>
               <td class="colstyle2">
                 <div class="imagerelease">
                   <img :src=release.image>
@@ -19,7 +19,7 @@
               </td>
               <td class="colstyle2">
                 <div class="pull-bottom" style="margin-top: 2%; vertical-align: middle;">
-                  <button id="delete" type="submit" class="btn btn-danger" @click.prevent="removeRelease(release)">削除</button>
+                  <button id="delete" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#releaseModal" @click="setReleaseNumber(release)">削除</button>
                 </div>
                 <div class="pull-top">
                   <!-- <button type="submit" class="btn btn-info" @click="moveToEditPage(release)">変更</button> -->
@@ -31,6 +31,24 @@
             </tr>
           </tbody>
         </table>
+        <!-- Modal confrim delete release -->
+        <div class="modal fade" id="releaseModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">発売号の削除</h5>
+              </div>
+              <div class="modal-body">
+                この発売号を削除してよろしいですか。
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary mr-auto" @click="removeRelease(release)">はい</button>
+                <button type="button" class="btn btn-primary mr-auto" data-dismiss="modal">いいえ</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end popup -->
         <ul class="pagination">
           <li class="page-item"><a class="page-link previous" href="#">前</a></li>
           <li class="page-item"><a class="page-link" href="#">1</a></li>
@@ -62,30 +80,21 @@ export default {
     })
   },
   methods: {
+    customFormatDate(date) {
+      return moment(date).format('YYYY年MM月DD日号');
+    },
+    setReleaseNumber(release){
+      this.release = release
+    },
     removeRelease(release){
-      Swal.fire({
-      title: '発売号の削除',
-      text: "この発売号を削除してよろしいですか。",
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#bad1e7',
-      cancelButtonColor: '#f9f490',
-      confirmButtonText: 'はい',
-      cancelButtonText: 'いいえ'
-      }).then((result) => {
-        if (result.value) {
-          axios.delete('v1/admin/release_numbers/' + release.id)
-          .then(response => {
-            this.release_numbers.splice(this.release_numbers.indexOf(release), 1)
-          }).catch((e) => {
-          console.log('Loi xoa')
-          })
-          // Swal.fire(
-          //   'はい!',
-          //   'Your file has been deleted.',
-          //   'success'
-          // )
-        }
+      // alert(release.id)
+      axios.delete('v1/admin/release_numbers/' + release.id)
+      .then(response => {
+        this.release_numbers.splice(this.release_numbers.indexOf(release), 1)
+        // window.location.reload()
+        $("#releaseModal").modal('hide');
+      }).catch((e) => {
+      console.log('Loi xoa')
       })
     }
   }
@@ -165,5 +174,35 @@ export default {
   }
   .previous, .next{
     background-color: #d1d1d1;
+  }
+  /* modal popup delete */
+  .modal-footer{
+    border-top: 0;
+    padding: 3rem;
+  }
+  .modal-footer .btn-secondary{
+    background-color: #bad1e7;
+  }
+  .modal-footer .btn-primary{
+    background-color: #f9f490;
+  }
+  .modal-footer .btn {
+    border: 2px solid #5b9bd5;
+    border-radius: 0%;
+  }
+  .modal-header{
+    background-color: #b8ddd0;
+  }
+  .modal-body, .modal-footer{
+    background-color: #f2f2f2;
+  }
+  .modal-title{
+    margin: auto;
+  }
+  .modal-content  {
+    -webkit-border-radius: 0px !important;
+    -moz-border-radius: 0px !important;
+    border-radius: 0px !important; 
+    border: 2px solid #3f85c1;
   }
 </style>

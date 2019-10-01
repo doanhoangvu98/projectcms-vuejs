@@ -4,19 +4,34 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 export default {
+    state: {
+
+    },
+    mutations: {
+
+    },
     actions: {
-        create(commit, data) {
+        createReleaseNumber(commit, data) {
             console.log(data)
             return new Promise((resolve, reject) => {
             axios.post('v1/admin/release_numbers', data)
-                .then(() => {
-                    // resolve();
-                    console.log(" Them thanh cong")
+                .then(response => {
+                    resolve(response);
                 })
                 .catch(error => {
-                    console.log("Ko them duoc")
-                    // reject(error);
+                    reject(error)
                 })
+            })
+        },
+        editReleaseNumber(commit, data){
+            return new Promise((resolve, reject) => {
+                axios.patch('v1/admin/release_numbers/'+ data.id, data)
+                    .then(response => {
+                        resolve(response);
+                    })
+                    .catch(error => {
+                        reject(error)
+                    })
             })
         },
         fetchData(){
@@ -47,19 +62,5 @@ export default {
                 })
             })
         },
-        edit(commit, data){
-            alert(data)
-            return new Promise((resolve, reject) => {
-                axios.patch('v1/admin/release_numbers', data)
-                .then(() => {
-                    resolve();
-                    console.log(" Sua thanh cong")
-                })
-                .catch(error => {
-                    console.log("Loi ...")
-                    reject(error);
-                })
-            })
-        }
     }
 }

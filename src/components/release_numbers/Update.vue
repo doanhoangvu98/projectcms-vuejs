@@ -3,7 +3,12 @@
       <div class="container-fluid">
         <h4 class="mt-4 text-left">発売号変更</h4>
         <div id="releasenumber">
-          <form>
+          <form id="validateForm">
+            <p if="errors.length">
+              <ul>
+                <li v-for="error in errors" v-bind:key="error" id="error">{{ error }}</li>
+              </ul>
+            </p>
             <div class="form-group">
               <label for="releasenumber">発売号名</label><br>
               <datepicker name="release_date" class="form-control daterelease" input-class="input-class" 
@@ -29,8 +34,9 @@
               <label>形容</label>
               <textarea class="form-control" rows="3" placeholder="この発売号は天然内容です。" v-model="form.description"></textarea>
             </div>
-            <button id="update" type="submit" class="btn btn-primary" @click="editRelease()">保存</button>
-            <button id="cancel" type="submit" class="btn btn-danger">キャンセル</button>
+            <button id="update" type="button" class="btn btn-primary" @click="editRelease()">保存</button>
+            <!-- <button id="cancel" type="submit" class="btn btn-danger">キャンセル</button> -->
+            <router-link to="/dashboard/release" class="btn btn-danger" id="cancel">キャンセル</router-link>
           </form>
         </div>
       </div>
@@ -45,7 +51,13 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      // imagelink: '',
+      errors:[],
+      errormessage: {
+        message4:  "発売号画像が10mb以下のみ有効", // hon 10mb
+        message5:  "発売号画像は「png」「jpg」のみ有効です。",  // khac dinh dang png - jpg
+        // mo ta
+        message6: "形容が500文字以下み有効です。" // dai hon 500 ki tu
+      },
       form: {
         id: this.$route.params.id,
         date_release: '',
@@ -64,10 +76,13 @@ export default {
       yearSuffix: '年'
      },
       dropzoneOptions: {
-          url: 'https://httpbin.org/post',
-          thumbnailWidth: 150,
-          maxFilesize: 10,
-          headers: { "My-Awesome-Header": "header value" }
+        url: 'https://httpbin.org/post',
+        uploadMultiple: false,
+        thumbnailWidth: 150,
+        maxFilesize: 30,
+        paramName: "upload",
+        dictDefaultMessage: "<i class='fa fa-upload'></i><br>ここに画像ドラッグ",
+        headers: { "My-Awesome-Header": "header value" },
       }
     }
   },
@@ -77,9 +92,9 @@ export default {
   },
   created(){
     axios.get('v1/admin/release_numbers/'+ this.form.id).then((response)=> {
-      console.log(response.data)
-      // this.form = response.data.release_number
+      console.log("ggvgh", response.data)
       this.form.date_release = response.data.release_number.name
+      console.log(this.form.date_release)
       this.form.description = response.data.release_number.description
       this.form.imagelink = response.data.image
     }).catch((e) => {
@@ -87,24 +102,23 @@ export default {
     })
   },
   methods: {
+    validateForm(){
+      if(this.form.description.length > 500){
+        this.errors.push(this.errormessage.message6)
+      }
+    },
     beforeMount(){
       this.afterComplete(file)
     },
-    // editRelease(){
-    //   console(this.form.date_release)
-    //   this.$store.dispatch('edit', this.form).then((response) =>{
-    //   SweetAlert.success()
-    //   }).catch((e) => {
-    //     console.log('Loi edit')
-    //   })
-    // },
     editRelease(){
-      axios.patch('v1/admin/release_numbers/'+ this.form.id, this.form).then(response=>{
-        // this.form = "";
-        this.$router.push('v1/dashboard/release');
-      }).catch(error=>{
-        this.errors = error.response.data;
-      });
+      this.errors = [];
+      this.validateForm()
+      if(!this.errors.length){
+        this.form.date_release =  moment(String(this.form.date_release)).format('YYYY-MM-DD')
+        this.$store.dispatch('editReleaseNumber', this.form)
+        .then(() => this.$router.push({name: 'release'}))
+        .catch(error => this.errors.push(error.response.data.error.message))
+      }
     },
     afterComplete(file) {
       this.form.file = file
