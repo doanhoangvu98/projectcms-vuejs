@@ -1,0 +1,445 @@
+<template>
+   <div id="page-content-wrapper">
+    <div class="container-fluid">
+        <h4 class="mt-4 text-left">ユーザーアドミン一覧</h4>
+        <button type="button" @click="clearSearch()" class="btn btn-primary" id="clear-search">クリア</button>
+        <div class="management">
+            <p if="errors.length">
+                <ul>
+                    <li v-for="error in errors" v-bind:key="error" id="error">{{ error}}</li>
+                </ul>
+            </p>
+            <div class="search-frame">
+                <div class="row row1">
+                    <label class="col-sm-1 col-form-label">ジューザ名</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="inputKeyword" placeholder="検索内容の入力" v-model="search.username">
+                    </div>
+                    <label class="col-sm-1 col-form-label">権限</label>
+                    <div class="col-sm-2">
+                        <select v-model="search.role">
+                            <option selected></option>
+                            <option>superadmin</option>
+                            <option>admin</option>
+                            <option>editor</option>
+                            <option>contributor</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3 btnGroupSearch">
+                        <button type="button" class="btn btn-primary" id="btnBack">⇠前</button>
+                        <button type="button" class="btn btn-primary" id="btnNext">次⇢</button>
+                    </div>
+                </div>
+                <div class="row row2">
+                    <label for="inputKeyword" class="col-sm-1 col-form-label">メール</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="inputKeyword" placeholder="検索内容の入力" v-model="search.email">
+                    </div>
+                    <label for="inputPassword" class="col-sm-1 col-form-label"></label>
+                    <div class="col-sm-2">
+                        <button type="button" class="btn btn-primary" id="btnsearch">検索</button>
+                    </div>
+                    <div class="col-sm-3">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="user-management">
+                <table class="table user-table">
+                    <thead>
+                        <tr class="row m-0">
+                            <th class="d-inline-block col-1">#</th>
+                            <th class="d-inline-block col-3">ユーザー名</th>
+                            <th class="d-inline-block col-2">権限</th>
+                            <th class="d-inline-block col-2">メール</th>
+                            <th class="d-inline-block col-2">パスワード</th>
+                            <th class="d-inline-block col-2">登録・変更。削除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row m-0" id="validateUserAdmin">
+                            <td class="d-inline-block col-1">1</td>
+                            <td class="d-inline-block col-3"><input type="text" placeholder="検索内容の入力" v-model="user.username"></td>
+                            <td class="d-inline-block col-2">
+                                <select v-model="user.role">
+                                    <option>superadmin</option>
+                                    <option>admin</option>
+                                    <option>editor</option>
+                                    <option>contributor</option>
+                                </select>
+                            </td>
+                            <td class="d-inline-block col-2"><input type="text" placeholder="メールの入力" v-model="user.email"></td>
+                            <td class="d-inline-block col-2"><input type="text" placeholder="パスワードの入力" v-model="user.password"></td>
+                            <td class="d-inline-block col-2"><button type="button" class="btn btn-info" id="addUser" @click="createUserAdmin()">登録</button></td>
+                        </tr>
+                        <tr v-for="(user, index) in user_admin" :key="user.id" :index="index">
+                            <td class="d-inline-block col-1">{{ index + 2 }}</td>
+                            <td class="d-inline-block col-3">{{ user.name }}</td>
+                            <td class="d-inline-block col-2">{{ user.role }}</td>
+                            <td class="d-inline-block col-2">{{ user.mail }}</td>
+                            <td class="d-inline-block col-2">{{ user.password }}</td>
+                            <td class="d-inline-block col-2">
+                                <button type="button" class="btn btn-info" id="editUser">変更</button>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" 
+                                data-target="#deleteuseradmin" id="deleteUser" @click="setUserAdmin(user)">削除</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <ul class="pagination">
+            <li class="page-item"><a class="page-link previous" href="#">前</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-tem"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link next" href="#">次</a></li>
+            </ul>
+            <!-- Modal confrim delete user admin -->
+            <div class="modal fade" id="deleteuseradmin" tabindex="-1" role="dialog" aria-labelledby="Title" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="Title">ジューザの削除</h5>
+                        </div>
+                        <div class="modal-body">
+                            このユーザーを削除してよろしいですか。
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary mr-auto" @click="removeUserAdmin(user)">はい</button>
+                            <button type="button" class="btn btn-primary mr-auto" data-dismiss="modal">いいえ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end popup -->
+            <!-- Modal show article  -->
+            <div class="modal fade" id="show-article" tabindex="-1" role="dialog" aria-labelledby="Title" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content" id="article-content">
+                        <div class="modal-header" id="article-header">
+                            <h5 class="modal-title" id="article-title"></h5>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">閉じる</button>
+                        </div>
+                        <div class="modal-body" id="article-body"></div>
+                        <div class="modal-footer" id="article-footer">
+                            <div><strong></strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- end popup -->
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+import axios from 'axios';
+import Swal from 'sweetalert2'
+import Qs from 'qs'
+export default {
+    data(){
+        return {
+            user: {
+                username: '',
+                role: '',
+                email: '',
+                password: ''
+            },
+            user_admin: [],
+            search: {
+                username: '',
+                email: '',
+                role: ''
+            },
+
+            errors: [],
+            reg: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
+            errorMessage: {
+                // username
+                message1: "ユーザー名を入力してください。", // null
+                message2: "ユーザー名は１００文字以下の有効です。", // length > 100 
+                // role
+                message3: "権限を入力してください。", // null
+                // user email
+                message4: "メール を入力してください。", // null
+                message5: "メールは６４文字以下の有効です。", // length > 64
+                message6: "無効なメール", // invalid email
+                // password
+                message7: "パスワードを入力してください。", // null
+                message8: "パスワードは７２文字以下の有効です。" // length > 72
+            }
+        }
+    },
+    computed: {
+        getUserAdmin() { return this.$store.getters.getUserAdmin },
+    },
+    created() {
+        // fetch user admin
+        this.$store.dispatch('fetchUserAdmin')
+        .then((response)=> {
+            this.user_admin = this.getUserAdmin
+        }).catch((e) => {
+            console.log(e)
+        })
+    },
+    methods: {       
+        setUserAdmin(user){
+            this.user = user
+        },
+        validateUserAdmin(){
+             if(!this.user.username){
+                this.errors.push(this.errorMessage.message1)
+            }
+            if(this.user.username && this.user.username.length > 10){
+                this.errors.push(this.errorMessage.message2)
+            }
+            if(!this.user.role){
+                this.errors.push(this.errorMessage.message3)
+            }
+            if(!this.user.email){
+                this.errors.push(this.errorMessage.message4)
+            }
+            if(this.user.email){
+                if(this.user.email.length > 64){
+                    this.errors.push(this.errorMessage.message5)
+                }
+                if(!this.reg.test(this.user.email)){
+                    this.errors.push(this.errorMessage.message6)
+                }
+            }
+            if(!this.user.password){
+                 this.errors.push(this.errorMessage.message7)
+            }
+            if(this.user.password && this.user.password.length > 72){
+                 this.errors.push(this.errorMessage.message7)
+            }
+        },
+        createUserAdmin(){
+            this.errors = []
+            this.validateUserAdmin()
+            if(!this.errors.length){
+                console.log(this.user)
+                this.$store.dispatch('createUserAdmin', {user: this.user})
+                .then(() => {
+
+                }).catch((error) => {
+                    this.errors.push(error.response.data.error.message)
+                })
+            }
+        },
+        removeUserAdmin(user){
+            alert(user.id)
+             axios.delete('v1/admin/user_admin/' + user.id)
+            .then(response => {
+                this.user_admin.splice(this.user_admin.indexOf(article), 1)
+                // $("#deleteuseradmin").modal('hide');
+                }).catch((e) => {
+                console.log('Loi xoa')
+            })
+        }
+    }
+}
+</script>
+
+<style>
+    .user-table{
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+    .user-table th{
+        background-color: #d1d1d1;
+        border: 1px solid #336da0;
+    }
+    .user-table tr{
+        border: none;
+    }
+    .user-table td{
+        position: relative;
+        border: 1px solid #336da0;
+        height: 50px;
+    }
+    .user-table td input, .user-table td select{
+    position: absolute;
+    display: block;
+    top:0;
+    left:0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    border: none;
+    box-sizing: border-box;
+    text-indent: 10px;
+    }
+    /* article list */
+    .article-text{
+        text-align: center;
+    }
+    .search-frame select{
+        width: 200px;
+        height: 35px;
+    }
+    #editUser, #deleteUser{
+        margin-right: 10px;
+        width: 100px;
+    }
+
+    .btnGroupSearch{
+        padding-top: 10px;
+        padding-left: 70px;
+    }
+    #btnBack{
+        float: left;
+    }
+    #clear-search{
+        float: right;
+        margin-top: 10px;
+    }
+    #btnsearch{
+        background-color: #f7f2b9;
+        width: 200px;
+    }
+    .search-frame select, #inputKeyword{
+        background-color: #d1d1d1;
+        border: 2px solid #336da0;
+        border-radius: 0%;
+        color: #000000;
+        width: 200px;
+        text-align: center;
+        margin: auto;
+    }
+    p.title-margin{
+        padding-top: 15px;
+    }
+    #page-content-wrapper {
+        min-width: 100vw;
+        padding-top: 50px;
+    }
+    .container-fluid{
+        width: 100%;
+        padding-left: 30px;
+        padding-right: 80px;
+    }
+    @media (min-width: 768px) {
+        #sidebar-wrapper {
+        margin-left: 0;
+        }
+        #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+        }
+    }
+    .management{
+        padding: 80px 5px;
+    }
+    .search-frame{
+        width: 100%;
+        height: 120px;
+        background-color:#eff2f1;
+        border: 2px solid #5b9bd5;
+    }
+    .article-management{
+        width: 100%;
+        background-color:#eff2f1;
+        border: 1px solid #5b9bd5;
+    }
+    .user-management{
+        background-color:#eff2f1;
+        margin-top: 10px;
+        margin-left: 2px;
+    }
+    .row1, .row2{
+        padding-top: 10px;
+    }
+    .row1 label{
+        float: left;
+        color: #000000;
+        padding-bottom: 10px;
+        font-weight: normal;
+    }
+    .row2 label{
+        float: left;
+        color: #000000;
+        font-weight: normal;
+    }
+    .article-table{
+        margin-top: 0px;
+        border: 1px solid #5b9bd5;
+        border-collapse: separate;
+    }
+    .pagination{
+        padding-top: 20px;
+    }
+    .pagination li{
+        border: 1px solid #5b9bd5;
+        border-radius: 0%;
+    }
+    .previous, .next{
+        background-color: #d1d1d1;
+    }
+    /* modal popup */
+    .modal-footer{
+        border-top: 0;
+        padding: 3rem;
+    }
+    .modal-footer .btn-secondary{
+        background-color: #bad1e7;
+    }
+    .modal-footer .btn-primary{
+        background-color: #f9f490;
+    }
+    .modal-footer .btn {
+        border: 2px solid #5b9bd5;
+        border-radius: 0%;
+    }
+    .modal-header{
+        background-color: #b8ddd0;
+    }
+    .modal-body, .modal-footer{
+        background-color: #f2f2f2;
+    }
+    .modal-body img{
+        width: 800px;
+        height: auto;
+    }
+    .modal-title{
+        margin: auto;
+    }
+    .modal-content  {
+        -webkit-border-radius: 0px !important;
+        -moz-border-radius: 0px !important;
+        border-radius: 0px !important; 
+        border: 2px solid #3f85c1;
+        width: 1000px;
+    }
+    /* dropdown */
+    .dropdown button{
+        width: 200px;
+        background-color: #d1d1d1;
+    }
+    #article-content{
+        background-color: #ffffff;
+    }
+    #article-header{
+        background-color: #d1d1d1;
+        float: left;
+    }
+    #article-body, #article-footer{
+        background-color: #ffffff;
+    }
+    #article-title{
+        background-color: #d1d1d1;
+        font-size: 15px;
+        font-weight: bold;
+        margin-left: 0px;
+    }
+    #article-footer div{
+        border: 1px solid #000000;
+        box-sizing: border-box;
+        width: 500px;
+        height: 40px;
+        padding: 7px 0px 6px 10px;  
+        text-align: left;
+        margin-left: -100px;
+    }
+</style>

@@ -6,18 +6,15 @@
         <router-link to='/dashboard/release' class="list-group-item list-group-item-action" 
           id="release"><i class="fa fa-caret-right" aria-hidden="true"></i> 発売号一覧管理
         </router-link>
-        <!-- <a href="#" class="list-group-item list-group-item-action bg-light" id="releasenumber">
-          <i class="fa fa-caret-right" aria-hidden="true"></i> 発売号一覧管理
-        </a> -->
-        <a href="#" class="list-group-item list-group-item-action" id="useradmin">
-          <i class="fa fa-caret-right" aria-hidden="true"></i> アドミンユーザー管理
-        </a>
-        <a href="#" class="list-group-item list-group-item-action" id="category">
-        <i class="fa fa-caret-right" aria-hidden="true"></i> カテゴリ管理
-        </a>
-        <a href="#" class="list-group-item list-group-item-action" id="article">
-          <i class="fa fa-caret-right" aria-hidden="true"></i> 記事一覧管理
-        </a>
+        <router-link to='/dashboard/user_admin' class="list-group-item list-group-item-action" 
+          id="useradmin"><i class="fa fa-caret-right" aria-hidden="true"></i> アドミンユーザー管理
+        </router-link>
+        <router-link to='/dashboard/category' class="list-group-item list-group-item-action" 
+          id="category"><i class="fa fa-caret-right" aria-hidden="true"></i> カテゴリ管理
+        </router-link>
+        <router-link to='/dashboard/article' class="list-group-item list-group-item-action" 
+          id="article"><i class="fa fa-caret-right" aria-hidden="true"></i> 記事一覧管理
+        </router-link>
         <a href="#" class="list-group-item list-group-item-action" id="imagesidebar">
           <i class="fa fa-caret-right" aria-hidden="true"></i> 画像管理
         </a>

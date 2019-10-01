@@ -24,7 +24,7 @@ export default {
             state.status = 'error'
             state.token = ''
             state.user = {}
-            state.role =''
+            state.role = ''
         },
         logout(state) {
             state.status = ''
@@ -43,25 +43,25 @@ export default {
         isContributor: state => state.role == 'contributor',
     },
     actions: {
-        login({ commit }, user) { 
+        login({ commit }, user) {
             return new Promise((resolve, reject) => {
                 commit('auth_request')
                 axios.post('users/sign_in', user) // data => user
-                .then(response => {
-                    const token = response.data.token
-                    const role = response.data.role
-                    localStorage.setItem('token', token);
-                    localStorage.setItem('role', role);
-                    axios.defaults.headers.common['Authorization'] = token
-                    //console.log(token)
-                    commit('auth_success', token, user, role)
-                    resolve(response)
-                })
-                .catch(error => {
-                    commit('auth_error')
-                    localStorage.clear();
-                    reject(error)
-                })
+                    .then(response => {
+                        const token = response.data.token
+                        const role = response.data.role
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('role', role);
+                        axios.defaults.headers.common['Authorization'] = token
+                        //console.log(token)
+                        commit('auth_success', token, user, role)
+                        resolve(response)
+                    })
+                    .catch(error => {
+                        commit('auth_error')
+                        localStorage.clear();
+                        reject(error)
+                    })
             })
         },
         logout({ commit }) {
@@ -69,16 +69,16 @@ export default {
                 commit('logout');
                 console.log('Dang logout')
                 axios.get('users/sign_out')
-                .then(response => {
-                    localStorage.clear();
-                    delete axios.defaults.headers.common['Authorization']
-                    console.log("Logout thanh cong")
-                    resolve();
-                })
-                .catch(error => {
-                    location.reload();
-                    reject(error);
-                })
+                    .then(response => {
+                        localStorage.clear();
+                        delete axios.defaults.headers.common['Authorization']
+                        console.log("Logout thanh cong")
+                        resolve();
+                    })
+                    .catch(error => {
+                        location.reload();
+                        reject(error);
+                    })
             })
         }
     }

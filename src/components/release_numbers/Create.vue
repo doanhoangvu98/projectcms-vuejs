@@ -3,12 +3,16 @@
       <div class="container-fluid">
         <h4 class="mt-4 text-left">新規発売号登録</h4>
         <div id="releasenumber">
-          <form>
+          <form id="validateForm">
+            <p if="errors.length">
+              <ul>
+                <li v-for="error in errors" v-bind:key="error" id="error">{{ error }}</li>
+              </ul>
+            </p>
             <div class="form-group">
               <label for="releasenumber">発売号名</label><br>
               <datepicker name="release_date" class="form-control daterelease" input-class="input-class" 
                 v-model="form.date_release" :format="customFormatter" :language="language"></datepicker>
-              <!-- <input type="text" class="form-control" id="datepicker" v-model="form.date_release" placeholder="2019年04月12日号"> -->
             </div>
             <div class="form-group style1">
               <vue-dropzone ref="myVueDropzone" id="upload" :options="dropzoneOptions"  
@@ -19,8 +23,8 @@
               <textarea class="form-control" rows="5" v-model="form.description" placeholder="形容の入力"></textarea>
             </div>
           </form>
-            <button id="addcreate" type="submit" class="btn btn-primary style1" @click="createRelease()">保存</button>
-            <button id="cancelcreate" type="submit" class="btn btn-danger style1">キャンセル</button>
+          <button id="addcreate" type="submit" class="btn btn-primary style1" @click="createRelease()">保存</button>
+          <button id="cancelcreate" type="submit" class="btn btn-danger style1" @click="$router.go(-1)">キャンセル</button>
         </div>
       </div>
     </div>
@@ -29,11 +33,23 @@
 <script>
 import Datepicker from 'vuejs-datepicker';
 import vue2Dropzone from 'vue2-dropzone'
-import SweetAlert from '../../services/SweetAlert';
+import SweetAlert from './../../services/SweetAlert'
+import 'vue2-dropzone/dist/vue2Dropzone.min.css'
 export default {
   data() {
     return {
-    // file: '',
+      errors:[],
+      errormessage: {
+        // ten so phat hanh
+        message1: "発売号を入力してください。", // rong
+        message2: "発売号が16文字以下み有効です。", // dai hon 16 ki tu
+        // anh so phat hanh
+        message3: "発売号画像を入力してください。", // rong
+        message4:  "発売号画像が10mb以下のみ有効", // hon 10mb
+        message5:  "発売号画像は「png」「jpg」のみ有効です。",  // khac dinh dang png - jpg
+        // mo ta
+        message6: "形容が500文字以下み有効です。" // dai hon 500 ki tu
+      },
      form: {
         date_release: '2019-04-12',
         file: '',
@@ -55,7 +71,7 @@ export default {
         thumbnailWidth: 150,
         maxFilesize: 30,
         paramName: "upload",
-        dictDefaultMessage: "<i class='fa fa-cloud-upload'></i>UPLOAD ME",
+        dictDefaultMessage: "<i class='fa fa-upload'></i><br>ここに画像ドラッグ",
         headers: { "My-Awesome-Header": "header value" },
       }
     }
@@ -65,23 +81,42 @@ export default {
      Datepicker
   },
   methods: {
-    beforeMount(){
-      this.afterComplete(file)
+    validateForm(){
+      if(!this.form.date_release){
+        this.errors.push(this.errormessage.message1)
+      }
+      if(this.form.date_release.length > 16){
+        this.errors.push(this.errormessage.message2)
+      }
+      if(!this.form.file){
+        this.errors.push(this.errormessage.message3)
+      }
+      if(this.form.file.size > 10000000){
+        this.errors.push(this.errormessage.message4)
+      }
+      if(this.form.description.length > 500){
+        this.errors.push(this.errormessage.message6)
+      }
     },
+    // format_date(value){
+    //   if (value) {
+    //     return moment(String(value)).format('YYYYMMDD')
+    //   }
+    // },
     createRelease(){
-      this.$store.dispatch('create', this.form).then((response)=> {
-        SweetAlert.success()
-        window.setTimeout(function(){location.reload()},1100)
-        console.log(response.data);
-      }).catch((e) => {
-        
-      })
+      this.errors = [];
+      this.validateForm()
+      if(!this.errors.length){
+        this.form.date_release =  moment(String(this.form.date_release)).format('YYYY-MM-DD')
+        console.log(this.form.date_release)
+        this.$store.dispatch('createReleaseNumber', this.form)
+        .then(() => this.$router.push({name: 'release'}))
+        .catch((error) => this.errors.push(error.response.data.error.message))
+      } 
     },
     afterComplete(file) {
       this.form.file = file
       console.log(this.form)
-      // let name = this.form.date_release
-      // let description = this.form.description
     },
   },
 }
