@@ -30,7 +30,8 @@
               <textarea class="form-control" rows="3" placeholder="この発売号は天然内容です。" v-model="form.description"></textarea>
             </div>
             <button id="update" type="submit" class="btn btn-primary" @click="editRelease()">保存</button>
-            <button id="cancel" type="submit" class="btn btn-danger">キャンセル</button>
+            <!-- <button id="cancel" type="submit" class="btn btn-danger">キャンセル</button> -->
+            <router-link to="/dashboard/release" class="btn btn-danger" id="cancel">キャンセル</router-link>
           </form>
         </div>
       </div>
@@ -90,17 +91,8 @@ export default {
     beforeMount(){
       this.afterComplete(file)
     },
-    // editRelease(){
-    //   console(this.form.date_release)
-    //   this.$store.dispatch('edit', this.form).then((response) =>{
-    //   SweetAlert.success()
-    //   }).catch((e) => {
-    //     console.log('Loi edit')
-    //   })
-    // },
     editRelease(){
       axios.patch('v1/admin/release_numbers/'+ this.form.id, this.form).then(response=>{
-        // this.form = "";
         this.$router.push('v1/dashboard/release');
       }).catch(error=>{
         this.errors = error.response.data;

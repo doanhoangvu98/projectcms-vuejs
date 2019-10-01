@@ -19,8 +19,26 @@
               </td>
               <td class="colstyle2">
                 <div class="pull-bottom" style="margin-top: 2%; vertical-align: middle;">
-                  <button id="delete" type="submit" class="btn btn-danger" @click.prevent="removeRelease(release)">削除</button>
+                  <button id="delete" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">削除</button>
                 </div>
+                <!-- Modal confrim delete popup -->
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">発売号の削除</h5>
+                      </div>
+                      <div class="modal-body">
+                        この発売号を削除してよろしいですか。
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary mr-auto" @click="removeRelease(release)">はい</button>
+                        <button type="button" class="btn btn-primary mr-auto" data-dismiss="modal">いいえ</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- end popup -->
                 <div class="pull-top">
                   <!-- <button type="submit" class="btn btn-info" @click="moveToEditPage(release)">変更</button> -->
                   <router-link :to="{name: 'release_edit', params: {id: release.id}}" class="btn btn-info">
@@ -63,29 +81,12 @@ export default {
   },
   methods: {
     removeRelease(release){
-      Swal.fire({
-      title: '発売号の削除',
-      text: "この発売号を削除してよろしいですか。",
-      type: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#bad1e7',
-      cancelButtonColor: '#f9f490',
-      confirmButtonText: 'はい',
-      cancelButtonText: 'いいえ'
-      }).then((result) => {
-        if (result.value) {
-          axios.delete('v1/admin/release_numbers/' + release.id)
-          .then(response => {
-            this.release_numbers.splice(this.release_numbers.indexOf(release), 1)
-          }).catch((e) => {
-          console.log('Loi xoa')
-          })
-          // Swal.fire(
-          //   'はい!',
-          //   'Your file has been deleted.',
-          //   'success'
-          // )
-        }
+      axios.delete('v1/admin/release_numbers/' + release.id)
+      .then(response => {
+        this.release_numbers.splice(this.release_numbers.indexOf(release), 1)
+        window.location.reload()
+      }).catch((e) => {
+      console.log('Loi xoa')
       })
     }
   }
@@ -165,5 +166,35 @@ export default {
   }
   .previous, .next{
     background-color: #d1d1d1;
+  }
+  /* modal popup delete */
+  .modal-footer{
+    border-top: 0;
+    padding: 3rem;
+  }
+  .modal-footer .btn-secondary{
+    background-color: #bad1e7;
+  }
+  .modal-footer .btn-primary{
+    background-color: #f9f490;
+  }
+  .modal-footer .btn {
+    border: 2px solid #5b9bd5;
+    border-radius: 0%;
+  }
+  .modal-header{
+    background-color: #b8ddd0;
+  }
+  .modal-body, .modal-footer{
+    background-color: #f2f2f2;
+  }
+  .modal-title{
+    margin: auto;
+  }
+  .modal-content  {
+    -webkit-border-radius: 0px !important;
+    -moz-border-radius: 0px !important;
+    border-radius: 0px !important; 
+    border: 2px solid #3f85c1;
   }
 </style>

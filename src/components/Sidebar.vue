@@ -12,9 +12,12 @@
         <a href="#" class="list-group-item list-group-item-action" id="useradmin">
           <i class="fa fa-caret-right" aria-hidden="true"></i> アドミンユーザー管理
         </a>
-        <a href="#" class="list-group-item list-group-item-action" id="category">
+        <!-- <a href="#" class="list-group-item list-group-item-action" id="category">
         <i class="fa fa-caret-right" aria-hidden="true"></i> カテゴリ管理
-        </a>
+        </a> -->
+        <router-link to='/dashboard/category' class="list-group-item list-group-item-action" 
+          id="category"><i class="fa fa-caret-right" aria-hidden="true"></i> カテゴリ管理
+        </router-link>
         <a href="#" class="list-group-item list-group-item-action" id="article">
           <i class="fa fa-caret-right" aria-hidden="true"></i> 記事一覧管理
         </a>

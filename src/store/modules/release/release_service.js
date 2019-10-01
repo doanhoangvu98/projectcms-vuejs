@@ -10,12 +10,11 @@ export default {
             return new Promise((resolve, reject) => {
             axios.post('v1/admin/release_numbers', data)
                 .then(() => {
-                    // resolve();
+                    window.location.reload()
                     console.log(" Them thanh cong")
                 })
                 .catch(error => {
                     console.log("Ko them duoc")
-                    // reject(error);
                 })
             })
         },
