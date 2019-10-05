@@ -6,13 +6,15 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+ 
 }
 </script>
 
 <style>
 #app {
-  font-family:  "Montserrat", sans-serif;
+  font-family: "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, メイリオ, Meiryo, 
+  "ＭＳ Ｐゴシック", "MS PGothic", "ＭＳ ゴシック" , "MS Gothic", "Noto Sans CJK JP", TakaoPGothic, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
