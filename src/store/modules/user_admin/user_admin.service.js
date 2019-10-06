@@ -23,16 +23,18 @@ export default {
             return new Promise((resolve, reject) => {
                 axios.post('v1/admin/user_admin/', data)
                     .then(response => {
-                        resolve(response);
+                        // commit('change_user_admin', response.data.user_admin)
+                        resolve(response)
                     })
                     .catch(error => {
                         reject(error)
                     })
             })
         },
-        editArticle(commit, data) {
+        editUserAdmin(commit, data) {
+            console.log(data)
             return new Promise((resolve, reject) => {
-                axios.patch('v1/admin/articles/' + data.id, data)
+                axios.patch('v1/admin/user_admin/' + data.id, data)
                     .then(response => {
                         resolve(response);
                     })

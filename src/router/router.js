@@ -111,12 +111,12 @@ const routes = [
                 name: 'article_edit',
                 component: UpdateArticle,
             },
-            // {
-            //     path: 'user_admin',
-            //     alias: 'user_admin',
-            //     name: 'user_admin',
-            //     component: UserAdminManagement,
-            // }
+            {
+                path: 'user_admin',
+                alias: 'user_admin',
+                name: 'user_admin',
+                component: UserAdminManagement,
+            }
             
         ],
         meta: {

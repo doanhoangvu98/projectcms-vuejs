@@ -97,7 +97,8 @@ export default {
       selected: null
     }
   },
-  mounted() {
+  // mounted() {
+    created(){
     axios.get('v1/admin/category/parents').then((response)=> {
       this.category_parents = response.data.category_parents
       console.log(response)
@@ -237,7 +238,6 @@ export default {
     height: 150px;
   }
   .btn{
-    border: 2px solid #336da0;
     border-radius: 0%;
     color: #000000;
     width: 150px;

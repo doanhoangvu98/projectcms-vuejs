@@ -29,6 +29,9 @@
                         <button type="button" class="btn btn-primary" id="btnBack">⇠前</button>
                         <button type="button" class="btn btn-primary" id="btnNext">次⇢</button>
                     </div>
+                    <div class="col-sm-1">
+                        <p class="user_page">7件 / 7件</p>
+                    </div>
                 </div>
                 <div class="row row2">
                     <label for="inputKeyword" class="col-sm-1 col-form-label">メール</label>
@@ -37,10 +40,11 @@
                     </div>
                     <label for="inputPassword" class="col-sm-1 col-form-label"></label>
                     <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" id="btnsearch">検索</button>
+                        <button type="button" class="btn btn-primary" id="btnsearch" @click="searchUserAdmin()">検索</button>
                     </div>
                     <div class="col-sm-3">
-                        
+                    </div>
+                    <div class="col-sm-1">
                     </div>
                 </div>
             </div>
@@ -72,16 +76,59 @@
                             <td class="d-inline-block col-2"><input type="text" placeholder="パスワードの入力" v-model="user.password"></td>
                             <td class="d-inline-block col-2"><button type="button" class="btn btn-info" id="addUser" @click="createUserAdmin()">登録</button></td>
                         </tr>
-                        <tr v-for="(user, index) in user_admin" :key="user.id" :index="index">
-                            <td class="d-inline-block col-1">{{ index + 2 }}</td>
-                            <td class="d-inline-block col-3">{{ user.name }}</td>
-                            <td class="d-inline-block col-2">{{ user.role }}</td>
-                            <td class="d-inline-block col-2">{{ user.mail }}</td>
-                            <td class="d-inline-block col-2">{{ user.password }}</td>
+                        <tr v-for="(user, index) in user_admin" :key="user.id" :index="index" 
+                            :class="{editing: user == editedUser}" v-cloak id="validateEdit">
+                            <td class="d-inline-block col-1">
+                                <div class="view">{{index + 2 }}</div>
+                                <div class="edit">{{index + 2}}</div>
+                            </td>
+                            <td class="d-inline-block col-3">
+                                <div class="view">
+                                    {{ user.username }}
+                                </div>
+                                <div class="edit">
+                                    <input type="text" v-model="user.username" />
+                                </div>
+                            </td>
                             <td class="d-inline-block col-2">
-                                <button type="button" class="btn btn-info" id="editUser">変更</button>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" 
-                                data-target="#deleteuseradmin" id="deleteUser" @click="setUserAdmin(user)">削除</button>
+                                <div class="view">
+                                    {{ user.role }}
+                                </div>
+                                <div class="edit">
+                                    <select v-model="user.role">
+                                        <option>superadmin</option>
+                                        <option>admin</option>
+                                        <option>editor</option>
+                                        <option>contributor</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td class="d-inline-block col-2">
+                                 <div class="view">
+                                    {{ user.email }}
+                                </div>
+                                <div class="edit">
+                                    <input type="text" v-model="user.email" />
+                                </div>
+                            </td>
+                            <td class="d-inline-block col-2">
+                                 <div class="view">
+                                   {{user.password}}
+                                </div>
+                                <div class="edit">
+                                    <input type="text" v-model="user.password" />
+                                </div>
+                            </td>
+                            <td class="d-inline-block col-2">
+                                <div class="view">
+                                    <button type="button" class="btn btn-info" id="editUser" @click="editData(user)">変更</button>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" 
+                                    data-target="#deleteuseradmin" id="deleteUser" @click="setUserAdmin(user)">削除</button>
+                                </div>
+                                <div class="edit">
+                                    <button type="button" class="btn btn-info" id="saveUser" @click="saveUserAdmin(user)">保存</button>
+                                    <button type="button" class="btn btn-danger" id="cancelEdit">キャンセル</button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -105,29 +152,13 @@
                             このユーザーを削除してよろしいですか。
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary mr-auto" @click="removeUserAdmin(user)">はい</button>
+                            <button type="button" class="btn btn-secondary mr-auto" @click="removeUserAdmin(u)">はい</button>
                             <button type="button" class="btn btn-primary mr-auto" data-dismiss="modal">いいえ</button>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- end popup -->
-            <!-- Modal show article  -->
-            <div class="modal fade" id="show-article" tabindex="-1" role="dialog" aria-labelledby="Title" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content" id="article-content">
-                        <div class="modal-header" id="article-header">
-                            <h5 class="modal-title" id="article-title"></h5>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">閉じる</button>
-                        </div>
-                        <div class="modal-body" id="article-body"></div>
-                        <div class="modal-footer" id="article-footer">
-                            <div><strong></strong></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <!-- end popup -->
         </div>
     </div>
 </div>
@@ -152,7 +183,13 @@ export default {
                 email: '',
                 role: ''
             },
-
+            editedUser: {
+                id: '',
+                username: '',
+                role: '',
+                email: '',
+                password: ''
+            },
             errors: [],
             reg: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
             errorMessage: {
@@ -176,19 +213,22 @@ export default {
     },
     created() {
         // fetch user admin
-        this.$store.dispatch('fetchUserAdmin')
-        .then((response)=> {
-            this.user_admin = this.getUserAdmin
-        }).catch((e) => {
-            console.log(e)
-        })
+        this.fetchUserAdmin()
     },
-    methods: {       
+    methods: {
+        fetchUserAdmin(){
+            this.$store.dispatch('fetchUserAdmin')
+            .then((response)=> {
+                this.user_admin = this.getUserAdmin
+            }).catch((e) => {
+                console.log(e)
+            })
+        },
         setUserAdmin(user){
-            this.user = user
+            this.u = user
         },
         validateUserAdmin(){
-             if(!this.user.username){
+            if(!this.user.username){
                 this.errors.push(this.errorMessage.message1)
             }
             if(this.user.username && this.user.username.length > 10){
@@ -215,6 +255,34 @@ export default {
                  this.errors.push(this.errorMessage.message7)
             }
         },
+        validateEdit(){
+            if(!this.editedUser.username){
+                this.errors.push(this.errorMessage.message1)
+            }
+            if(this.editedUser.username && this.editedUser.username.length > 10){
+                this.errors.push(this.errorMessage.message2)
+            }
+            if(!this.editedUser.role){
+                this.errors.push(this.errorMessage.message3)
+            }
+            if(!this.editedUser.email){
+                this.errors.push(this.errorMessage.message4)
+            }
+            if(this.editedUser.email){
+                if(this.editedUser.email.length > 64){
+                    this.errors.push(this.errorMessage.message5)
+                }
+                if(!this.reg.test(this.editedUser.email)){
+                    this.errors.push(this.errorMessage.message6)
+                }
+            }
+            if(!this.editedUser.password){
+                 this.errors.push(this.errorMessage.message7)
+            }
+            if(this.editedUser.password && this.editedUser.password.length > 72){
+                 this.errors.push(this.errorMessage.message7)
+            }
+        },
         createUserAdmin(){
             this.errors = []
             this.validateUserAdmin()
@@ -222,27 +290,81 @@ export default {
                 console.log(this.user)
                 this.$store.dispatch('createUserAdmin', {user: this.user})
                 .then(() => {
-
+                    this.fetchUserAdmin()
+                    this.user.username = '',
+                    this.user.email = '',
+                    this.user.password = '',
+                    this.user.role = ''
                 }).catch((error) => {
                     this.errors.push(error.response.data.error.message)
                 })
             }
         },
-        removeUserAdmin(user){
-            alert(user.id)
-             axios.delete('v1/admin/user_admin/' + user.id)
+        removeUserAdmin(u){
+             axios.delete('v1/admin/user_admin/' + u.id)
             .then(response => {
-                this.user_admin.splice(this.user_admin.indexOf(article), 1)
-                // $("#deleteuseradmin").modal('hide');
+                this.user_admin.splice(this.user_admin.indexOf(u), 1)
+                $("#deleteuseradmin").modal('hide');
                 }).catch((e) => {
                 console.log('Loi xoa')
             })
+        },
+        editData(user){
+            this.beforEditCache = user
+            this.editedUser = user
+        },
+        saveUserAdmin(){
+            this.errors = []
+            this.validateEdit()
+            console.log(this.editedUser)
+            if(!this.errors.length){
+                this.$store.dispatch('editUserAdmin', this.editedUser)
+                .then(()=>{
+                    this.fetchUserAdmin()
+                }).catch((error)=>{
+                    this.errors.push(error.response.data.error.message)
+                })
+            }
+        },
+        searchUserAdmin(){
+            axios.get('v1/admin/user_admin/search', {
+                params:{
+                    q: this.search
+                },
+                paramsSerializer: function(params) {
+                    return Qs.stringify(params, {arrayFormat: 'brackets'})
+                }
+            })
+            .then((response) => {
+                this.user_admin = response.data.user_admin
+            })
+            .catch((error) => {
+                this.errors.push(error.response.data.error.message)
+            })
+        },
+        clearSearch(){
+            this.search.email = ''
+            this.search.role = ''
+            this.search.username = ''
+            this.fetchUserAdmin()
         }
     }
 }
 </script>
 
 <style>
+    [v-cloak] {
+      display: none;
+    }
+    .edit {
+      display: none;
+    }
+    .editing .edit {
+      display: block
+    }
+    .editing .view {
+      display: none;
+    }
     .user-table{
         margin-top: 0px;
         margin-bottom: 0px;
@@ -283,7 +405,19 @@ export default {
         margin-right: 10px;
         width: 100px;
     }
-
+    #saveUser, #cancelEdit{
+        width: 100px;
+        margin-right: 10px;
+    }
+    #cancelEdit{
+        background-color: #d1d1d1;
+    }
+    #saveUser{
+        background-color: #bae2cb;
+    }
+    p.user_page{
+        margin-top: 13px;
+    }
     .btnGroupSearch{
         padding-top: 10px;
         padding-left: 70px;

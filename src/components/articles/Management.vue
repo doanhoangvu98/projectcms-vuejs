@@ -271,12 +271,12 @@ export default {
         // }
         searchArticles(){
             axios.get('v1/admin/articles/search', {
-            params:{
-                q: this.search
-            },
-            paramsSerializer: function(params) {
-                return Qs.stringify(params, {arrayFormat: 'brackets'})
-            }
+                params:{
+                    q: this.search
+                },
+                paramsSerializer: function(params) {
+                    return Qs.stringify(params, {arrayFormat: 'brackets'})
+                }
             })
             .then((response) => {
                 console.log(response);

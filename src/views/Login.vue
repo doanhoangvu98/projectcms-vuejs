@@ -75,7 +75,7 @@ import VueSweetalert from './../services/SweetAlert'
           VueSweetalert.success()
         }).catch((e) => {
           this.errors.push(this.errorMessage.message4)
-          VueSweetalert.failure()
+          // VueSweetalert.failure()
         })
       },
     }
