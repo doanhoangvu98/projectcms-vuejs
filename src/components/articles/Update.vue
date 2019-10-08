@@ -191,35 +191,35 @@ export default {
         this.$store.dispatch('fetchParentCategory')
         .then((response)=> {
             this.parent_categories = this.getParentCategory
-        }).catch((e) => {
-            console.log(e)
+        }).catch((error) => {
+            this.errors.push(error.response.data.error.message)
         })
         // fetch release_date from release number
         this.$store.dispatch('fetchReleaseNumberDate')
         .then((response)=> {
             this.release_number_date = this.getReleaseNumberDate
-        }).catch((e) => {
-            console.log(e)
+        }).catch((error) => {
+            this.errors.push(error.response.data.error.message)
         })
         // fetch data from article 
         axios.get('v1/admin/articles/'+ this.form.id).then((response)=> {
-        console.log(response.data)
-        this.form.content = response.data.article.content
-        this.form.status = response.data.article.status
-        this.form.title = response.data.article.title
-        this.form.children_id = response.data.article.children_id
-        this.form.parent_id = response.data.article.parent_id
-        this.$store.dispatch('fetchChildrenCategory', response.data.article.parent_id)
-            .then((response)=> {
-                this.children_categories = this.getChildrenCategory
-                console.log(this.children_categories)
-            }).catch((e) => {
-                console.log(e)
-            })
-        this.form.release_date = response.data.article.release_number_id
-        this.form.file = response.data.article.file
-        }).catch((e) => {
-        console.log('Loi lay du lieu')
+            // console.log(response.data)
+            this.form.content = response.data.article.content
+            this.form.status = response.data.article.status
+            this.form.title = response.data.article.title
+            this.form.children_id = response.data.article.children_id
+            this.form.parent_id = response.data.article.parent_id
+            this.$store.dispatch('fetchChildrenCategory', response.data.article.parent_id)
+                .then((response)=> {
+                    this.children_categories = this.getChildrenCategory
+                    // console.log(this.children_categories)
+                }).catch((error) => {
+                    this.errors.push(error.response.data.error.message)
+                })
+            this.form.release_date = response.data.article.release_number_id
+            this.form.file = response.data.article.file
+        }).catch((error) => {
+            this.errors.push(error.response.data.error.message)
         })
     },
     methods: {
@@ -259,7 +259,7 @@ export default {
         editArticle(){
             this.errors = []
             this.validateArticle()
-            console.log(this.form)
+            // console.log(this.form)
             if(!this.errors.length){
                 this.$store.dispatch('editArticle', this.form)
                 .then(() => this.$router.push({name: 'article'}))
@@ -271,9 +271,9 @@ export default {
             this.$store.dispatch('fetchChildrenCategory', this.form.parent_id)
             .then((response)=> {
                 this.children_categories = this.getChildrenCategory
-                console.log(this.children_categories)
-            }).catch((e) => {
-                console.log(e)
+                // console.log(this.children_categories)
+            }).catch((error) => {
+                 this.errors.push(error.response.data.error.message)
             })
         }
     }
@@ -344,7 +344,7 @@ export default {
     }
     .article-content{
         margin-left: 20px;
-        padding-bottom: 100px;
+        /* padding-bottom: 100px; */
     }
     .ck.ck-editor {
         width: 100%;

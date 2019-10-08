@@ -1,6 +1,6 @@
 <template>
   <div class="col-sm-6 offset-sm-3 text-center" id="login">
-    <form class="form-signin form-group" @submit.prevent="loginSubmit(event)">
+    <form class="form-signin form-group" id="validateLogin">
       <h2 class="h3 mb-3 font-weight-normal" id="title">総合ジャーナル</h2>
 	    <p if="errors.length">
         <ul>
@@ -9,14 +9,14 @@
       </p>
       <div class="form-group">
         <label for="inputEmail" class="sr-only">Email address</label>
-        <input  id="inputEmail" class="form-control" placeholder="メールの入力" v-model="email" autofocus>
+        <input  id="inputEmail" class="form-control" placeholder="メールの入力" v-model="form.email" autofocus>
       </div>
       <div class="form-group">
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="パスワードの入力" v-model="password">
+        <input type="password" id="inputPassword" class="form-control" placeholder="パスワードの入力" v-model="form.password">
       </div>
       <div class="form-group">
-        <button class="btn btn-primary" type="submit" value="Login" id="submit">ログイン</button>
+        <button class="btn btn-primary" type="button" value="Login" id="submit" @click="loginSubmit">ログイン</button>
       </div>
     </form>
   </div>
@@ -27,8 +27,10 @@ import VueSweetalert from './../services/SweetAlert'
   export default {
     data() {
       return {
-        email: '',
-        password: '',
+        form:{
+          email: '',
+          password: '',
+        },
         errors: [],
         user: {},
         reg: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
@@ -44,39 +46,36 @@ import VueSweetalert from './../services/SweetAlert'
       }
     },
     methods: {
-      loginSubmit: function (event) {
-        let email = this.email;
-        let password = this.password;
-        this.errors = [];
-          if(!this.email){
+      validateLogin(){
+        if(!this.form.email){
             this.errors.push(this.errorMessage.message2)
+        }
+        if(!this.form.password){
+          this.errors.push(this.errorMessage.message3)
+        }
+        if(this.form.email){
+          if(this.form.email.length > 64){
+            this.errors.push(this.errorMessage.message5)
           }
-          if(!this.password){
-            this.errors.push(this.errorMessage.message3)
+          if(!this.reg.test(this.form.email)){
+            this.errors.push(this.errorMessage.message7)
           }
-          if(this.email){
-            if(this.email.length > 64){
-              this.errors.push(this.errorMessage.message5)
-            }
-            if(!this.reg.test(this.email)){
-              this.errors.push(this.errorMessage.message7)
-            }
-          }
-          if(this.password.length > 72){
-            this.errors.push(this.errorMessage.message6)
-          } 
-          if(this.errors.length != 0) {
-            event.preventDefault();
-          }
-        this.$store.dispatch('login', { email, password
-        }).then((response)=> {
-          this.$router.push({ path: '/dashboard'});
-          window.location.reload()
-          VueSweetalert.success()
-        }).catch((e) => {
-          this.errors.push(this.errorMessage.message4)
-          // VueSweetalert.failure()
-        })
+        }
+        if(this.form.password.length > 72){
+          this.errors.push(this.errorMessage.message6)
+        } 
+      },
+      loginSubmit(){
+        this.errors = [];
+        this.validateLogin()
+        console.log(this.form)
+        if(!this.errors.length){
+          this.$store.dispatch('login', this.form )
+          .then(() => this.$router.push({name: 'dashboard'}))
+          .catch((error) => {
+            this.errors.push(error.response.data.error.message)
+          })
+        }
       },
     }
   }

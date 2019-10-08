@@ -5,12 +5,17 @@
       <!-- <button id="add" type="submit" class="btn btn-primary">新規登録</button> -->
       <router-link to="/dashboard/release/new" class="btn btn-primary" id="add">新規登録</router-link>
       <div class="management">
+        <p if="errors.length">
+          <ul>
+            <li v-for="error in errors" v-bind:key="error" id="error">{{ error }}</li>
+          </ul>
+        </p>
         <table class="table table-bordered">
           <thead>
           </thead>
-          <tbody v-for="(release,index) in release_numbers" :key="release.id" :release="release" :index="index">
+          <tbody v-for="(release,index) in displayReleaseNumber" :key="release.id" :release="release" :index="index">
             <tr>
-              <td class="colstyle1 id">{{index+1}}</td>
+              <td class="colstyle1 id">{{index+1+(page*perPage)-perPage}}</td>
               <td scope="row" class="colstyle2"><h5>{{ customFormatDate(release.name)  }}</h5></td>
               <td class="colstyle2">
                 <div class="imagerelease">
@@ -50,11 +55,11 @@
         </div>
         <!-- end popup -->
         <ul class="pagination">
-          <li class="page-item"><a class="page-link previous" href="#">前</a></li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link next" href="#">次</a></li>
+          <li class="page-item" v-if="page != 1" @click="page--"><a class="page-link previous" href="#">前</a></li>
+          <li class="page-item" v-for="pageNumber in pages" :key="pageNumber" @click="page = pageNumber">
+            <a class="page-link" href="#">{{pageNumber}}</a>
+          </li>
+          <li class="page-item" @click="page++" v-if="page < pages.length"><a class="page-link next" href="#">次</a></li>
         </ul>
       </div>
     </div>
@@ -68,18 +73,52 @@ export default {
   data(){
     return {
       release_numbers: [],
-      error: ''
+      error: '',
+      page: 1,
+      perPage: '',
+      pages: [],
+      errors: []
     }
   },
-  mounted() {
-   axios.get('v1/admin/release_numbers').then((response)=> {
-      this.release_numbers = response.data.release_number
-      console.log(response)
-    }).catch((e) => {
-      console.log('Loi lay du lieu')
-    })
+  created() {
+    this.getReleaseNumber()
+  },
+  // pagination display
+  computed: {
+    displayReleaseNumber () {
+      return this.paginate(this.release_numbers);
+    }
+  },
+  watch: {
+    release_numbers() {
+      this.setPages();
+    }
   },
   methods: {
+    getReleaseNumber(){
+      axios.get('v1/admin/release_numbers').then((response)=> {
+      this.release_numbers = response.data.release_number
+      this.perPage = response.data.perpage
+      // console.log(this.perPage)
+      }).catch((error) => {
+        cthis.errors.push(error.response.data.error.message)
+      })
+    },
+    setPages(){
+      this.pages.length = 0
+      let numberOfPages = Math.ceil(this.release_numbers.length / this.perPage);
+      // console.log(numberOfPages)
+      for (let index = 1; index <= numberOfPages; index++) {
+        this.pages.push(index);
+      }
+    },
+    paginate(release_numbers) {
+      let page = this.page;
+      let perPage = this.perPage;
+      let from = (page * perPage) - perPage;
+      let to = (page * perPage);
+      return release_numbers.slice(from, to);
+    },
     customFormatDate(date) {
       return moment(date).format('YYYY年MM月DD日号');
     },
@@ -87,14 +126,12 @@ export default {
       this.release = release
     },
     removeRelease(release){
-      // alert(release.id)
       axios.delete('v1/admin/release_numbers/' + release.id)
       .then(response => {
         this.release_numbers.splice(this.release_numbers.indexOf(release), 1)
-        // window.location.reload()
         $("#releaseModal").modal('hide');
-      }).catch((e) => {
-      console.log('Loi xoa')
+      }).catch((error) => {
+        this.errors.push(error.response.data.error.message)
       })
     }
   }
@@ -206,3 +243,4 @@ export default {
     border: 2px solid #3f85c1;
   }
 </style>
+// https://medium.com/@obapelumi/pagination-with-vuejs-1f505ce8d15b

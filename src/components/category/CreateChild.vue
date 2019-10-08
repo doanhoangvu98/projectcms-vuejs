@@ -67,9 +67,9 @@ export default {
   mounted() {
    axios.get('v1/admin/category/parents').then((response)=> {
       this.category_parents = response.data.category_parents
-      console.log(response)
-      }).catch((e) => {
-      console.log('Loi lay du lieu category cha')
+        // console.log(response)
+      }).catch((error) => {
+        this.errors.push(error.response.data.error.message)
       })
     },
   methods: {
@@ -91,7 +91,8 @@ export default {
       if(!this.errors.length){
         this.$store.dispatch('createChildCategory', this.form)
         .then(()=> this.$router.push({ name: "category"}))
-        .catch((e)=>{
+        .catch((error)=>{
+          this.errors.push(error.response.data.error.message)
         })
       }
     },

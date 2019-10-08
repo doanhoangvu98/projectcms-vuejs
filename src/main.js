@@ -20,6 +20,8 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import Qs from 'qs'//
 import store from "./store/index.js"
 import router from "./router/router"
+import JwPagination from 'jw-vue-pagination';
+Vue.component('jw-pagination', JwPagination);
 
 Vue.use(Vuex)
 Vue.use(VueRouter)

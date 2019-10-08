@@ -2,8 +2,8 @@
    <div id="page-content-wrapper">
     <div class="container-fluid">
         <h4 class="mt-4 text-left">ユーザーアドミン一覧</h4>
-        <button type="button" @click="clearSearch()" class="btn btn-primary" id="clear-search">クリア</button>
-        <div class="management">
+        <!-- <button type="button" @click="clearSearch()" class="btn btn-primary" id="clear-search">クリア</button> -->
+        <div class="user-admin-management">
             <p if="errors.length">
                 <ul>
                     <li v-for="error in errors" v-bind:key="error" id="error">{{ error}}</li>
@@ -18,7 +18,7 @@
                     <label class="col-sm-1 col-form-label">権限</label>
                     <div class="col-sm-2">
                         <select v-model="search.role">
-                            <option selected></option>
+                            <option></option>
                             <option>superadmin</option>
                             <option>admin</option>
                             <option>editor</option>
@@ -26,11 +26,11 @@
                         </select>
                     </div>
                     <div class="col-sm-3 btnGroupSearch">
-                        <button type="button" class="btn btn-primary" id="btnBack">⇠前</button>
-                        <button type="button" class="btn btn-primary" id="btnNext">次⇢</button>
+                        <button type="button" class="btn btn-primary" id="btnBack" v-if="page != 1" @click="page--">⇠前</button>
+                        <button type="button" class="btn btn-primary" id="btnNext" v-if="page < pages.length" @click="page++">次⇢</button>
                     </div>
                     <div class="col-sm-1">
-                        <p class="user_page">7件 / 7件</p>
+                        <p class="user_page">{{ page }}件 / {{ numberOfPages }}件</p>
                     </div>
                 </div>
                 <div class="row row2">
@@ -76,11 +76,13 @@
                             <td class="d-inline-block col-2"><input type="text" placeholder="パスワードの入力" v-model="user.password"></td>
                             <td class="d-inline-block col-2"><button type="button" class="btn btn-info" id="addUser" @click="createUserAdmin()">登録</button></td>
                         </tr>
-                        <tr v-for="(user, index) in user_admin" :key="user.id" :index="index" 
+                        <tr v-for="(user, index) in displayUserAdmin" :key="user.id" :index="index" 
                             :class="{editing: user == editedUser}" v-cloak id="validateEdit">
                             <td class="d-inline-block col-1">
-                                <div class="view">{{index + 2 }}</div>
-                                <div class="edit">{{index + 2}}</div>
+                                <div class="view">{{index+2+(page*perPage)-perPage}}</div>
+                                <div class="edit">
+                                    <input type="text" readonly :value="index + 2" class="indexUserAdmin">
+                                </div>
                             </td>
                             <td class="d-inline-block col-3">
                                 <div class="view">
@@ -113,34 +115,27 @@
                             </td>
                             <td class="d-inline-block col-2">
                                  <div class="view">
-                                   {{user.password}}
+                                   ****************
                                 </div>
                                 <div class="edit">
-                                    <input type="text" v-model="user.password" />
+                                    <input type="text" v-model="user.password" placeholder="**************"/>
                                 </div>
                             </td>
                             <td class="d-inline-block col-2">
                                 <div class="view">
                                     <button type="button" class="btn btn-info" id="editUser" @click="editData(user)">変更</button>
                                     <button type="button" class="btn btn-danger" data-toggle="modal" 
-                                    data-target="#deleteuseradmin" id="deleteUser" @click="setUserAdmin(user)">削除</button>
+                                    data-target="#deleteuseradmin" id="deleteUser" @click="setUserAdmin(user)" v-if="user.role != 'superadmin'">削除</button>
                                 </div>
                                 <div class="edit">
                                     <button type="button" class="btn btn-info" id="saveUser" @click="saveUserAdmin(user)">保存</button>
-                                    <button type="button" class="btn btn-danger" id="cancelEdit">キャンセル</button>
+                                    <button type="button" class="btn btn-danger" id="cancelEdit" @click="cancelEditUser()">キャンセル</button>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <ul class="pagination">
-            <li class="page-item"><a class="page-link previous" href="#">前</a></li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-tem"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link next" href="#">次</a></li>
-            </ul>
             <!-- Modal confrim delete user admin -->
             <div class="modal fade" id="deleteuseradmin" tabindex="-1" role="dialog" aria-labelledby="Title" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -190,6 +185,11 @@ export default {
                 email: '',
                 password: ''
             },
+            // pagination
+            page: 1,
+            perPage: '',
+            pages: [],
+            numberOfPages: '',
             errors: [],
             reg: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
             errorMessage: {
@@ -210,6 +210,14 @@ export default {
     },
     computed: {
         getUserAdmin() { return this.$store.getters.getUserAdmin },
+        displayUserAdmin() {
+            return this.paginate(this.user_admin);
+        }
+    },
+    watch: {
+        user_admin() {
+            this.setPages();
+        }
     },
     created() {
         // fetch user admin
@@ -219,10 +227,30 @@ export default {
         fetchUserAdmin(){
             this.$store.dispatch('fetchUserAdmin')
             .then((response)=> {
-                this.user_admin = this.getUserAdmin
-            }).catch((e) => {
-                console.log(e)
+                this.user_admin = this.getUserAdmin.user_admin
+                this.perPage = this.getUserAdmin.perpage
+            }).catch((error) => {
+                this.errors.push(error.response.data.error.message)
             })
+        },
+        setPages(){
+            this.pages.length = 0
+            let numberOfPages = Math.ceil(this.user_admin.length / this.perPage);
+            this.pages.length = 0
+            // console.log("+ So trang hien tai " + numberOfPages)
+            // console.log("So index hien tai " + this.pages.length)
+            this.numberOfPages = numberOfPages
+            for (let index = 1; index <= numberOfPages; index++) {
+                this.pages.push(index);
+            }
+            // console.log("so index sau " + this.pages.length)
+        },
+        paginate(user_admin) {
+            let page = this.page;
+            let perPage = this.perPage;
+            let from = (page * perPage) - perPage;
+            let to = (page * perPage);
+            return user_admin.slice(from, to);
         },
         setUserAdmin(user){
             this.u = user
@@ -276,12 +304,12 @@ export default {
                     this.errors.push(this.errorMessage.message6)
                 }
             }
-            if(!this.editedUser.password){
-                 this.errors.push(this.errorMessage.message7)
-            }
-            if(this.editedUser.password && this.editedUser.password.length > 72){
-                 this.errors.push(this.errorMessage.message7)
-            }
+            // if(!this.editedUser.password){
+            //      this.errors.push(this.errorMessage.message7)
+            // }
+            // if(this.editedUser.password && this.editedUser.password.length > 72){
+            //      this.errors.push(this.errorMessage.message7)
+            // }
         },
         createUserAdmin(){
             this.errors = []
@@ -306,12 +334,15 @@ export default {
                 this.user_admin.splice(this.user_admin.indexOf(u), 1)
                 $("#deleteuseradmin").modal('hide');
                 }).catch((e) => {
-                console.log('Loi xoa')
+               this.errors.push(error.response.data.error.message)
             })
         },
         editData(user){
             this.beforEditCache = user
             this.editedUser = user
+        },
+        cancelEditUser(){
+            this.editedUser = null
         },
         saveUserAdmin(){
             this.errors = []
@@ -364,6 +395,9 @@ export default {
     }
     .editing .view {
       display: none;
+    }
+    input.indexUserAdmin{
+        text-align: center;
     }
     .user-table{
         margin-top: 0px;
@@ -425,11 +459,16 @@ export default {
     #btnBack{
         float: left;
     }
+    #btnBack, #btnNext{
+        border: 2px solid #336da0;
+    }
     #clear-search{
         float: right;
         margin-top: 10px;
     }
     #btnsearch{
+        border: 2px solid #336da0;
+        border-radius: 0%;
         background-color: #f7f2b9;
         width: 200px;
     }
@@ -575,5 +614,9 @@ export default {
         padding: 7px 0px 6px 10px;  
         text-align: left;
         margin-left: -100px;
+    }
+    h4.text-left{
+        font-weight: bold;
+        color: #000000;
     }
 </style>

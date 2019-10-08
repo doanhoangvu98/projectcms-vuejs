@@ -6,6 +6,7 @@ import release from "./modules/release/release_service"
 import category from "./modules/category/category_service"
 import articleservice from "./modules/article/article_service"
 import useradminservice from "./modules/user_admin/user_admin.service"
+import settingservice from "./modules/settings/settings.service"
 import createPersistedState from 'vuex-persistedstate'
 import * as Cookies from 'js-cookie'
 
@@ -17,7 +18,8 @@ export default new Vuex.Store({
         release,
         category,
         articleservice,
-        useradminservice
+        useradminservice,
+        settingservice
     },
     plugins: [
         createPersistedState({

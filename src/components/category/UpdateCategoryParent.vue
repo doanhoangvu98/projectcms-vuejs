@@ -61,8 +61,8 @@ export default {
       this.form.name = response.data.parent_category.name
       this.form.global_menu = response.data.parent_category.global_menu
       this.form.menu_bar = response.data.parent_category.menu_bar
-    }).catch((e) => {
-      console.log('Loi lay du lieu')
+    }).catch((error) => {
+       this.errors.push(error.response.data.error.message)
     })
   },
   methods: {

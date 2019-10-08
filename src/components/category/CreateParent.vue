@@ -73,7 +73,7 @@ export default {
         this.$store.dispatch('createParentCategory', this.form)
         .then(() => this.$router.push({name: 'category'}))
         .catch((error)=>{
-          console.log(error)
+          this.errors.push(error.response.data.error.message)
         })
       }else{
         console.log("loi")

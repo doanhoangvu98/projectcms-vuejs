@@ -108,7 +108,7 @@ export default {
       this.validateForm()
       if(!this.errors.length){
         this.form.date_release =  moment(String(this.form.date_release)).format('YYYY-MM-DD')
-        console.log(this.form.date_release)
+        // console.log(this.form.date_release)
         this.$store.dispatch('createReleaseNumber', this.form)
         .then(() => this.$router.push({name: 'release'}))
         .catch((error) => this.errors.push(error.response.data.error.message))

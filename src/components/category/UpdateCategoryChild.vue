@@ -69,8 +69,8 @@ export default {
    axios.get('v1/admin/category/parents').then((response)=> {
       this.category_parents = response.data.category_parents
       console.log(response)
-    }).catch((e) => {
-      console.log('Loi lay du lieu')
+    }).catch((error) => {
+      this.errors.push(error.response.data.error.message)
     })
   },
   created(){
@@ -80,8 +80,8 @@ export default {
       this.form.parent_id = response.data.child_category.parent_id
       this.form.global_menu = response.data.child_category.global_menu
       this.form.menu_bar = response.data.child_category.menu_bar
-    }).catch((e) => {
-      console.log('Loi lay du lieu')
+    }).catch((error) => {
+      this.errors.push(error.response.data.error.message)
     })
   },
   methods: {

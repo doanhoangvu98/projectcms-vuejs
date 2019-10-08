@@ -12,7 +12,7 @@ export default {
     },
     actions: {
         createReleaseNumber(commit, data) {
-            console.log(data)
+            // console.log(data)
             return new Promise((resolve, reject) => {
             axios.post('v1/admin/release_numbers', data)
                 .then(response => {

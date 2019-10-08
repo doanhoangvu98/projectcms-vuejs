@@ -92,13 +92,13 @@ export default {
   },
   created(){
     axios.get('v1/admin/release_numbers/'+ this.form.id).then((response)=> {
-      console.log("ggvgh", response.data)
+      // console.log("ggvgh", response.data)
       this.form.date_release = response.data.release_number.name
-      console.log(this.form.date_release)
+      // console.log(this.form.date_release)
       this.form.description = response.data.release_number.description
       this.form.imagelink = response.data.image
-    }).catch((e) => {
-      console.log('Loi lay du lieu')
+    }).catch((error) => {
+      this.errors.push(error.response.data.error.message)
     })
   },
   methods: {

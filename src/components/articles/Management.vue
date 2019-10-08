@@ -3,8 +3,13 @@
     <div class="container-fluid">
         <h4 class="mt-4 text-left">記事一覧</h4>
         <router-link to="/dashboard/article/new" class="btn btn-primary" id="add">新規記事追加</router-link>
-        <button type="button" @click="clearSearch()" class="btn btn-primary" id="clear-search">クリア</button>
+        <!-- <button type="button" @click="clearSearch()" class="btn btn-primary" id="clear-search">クリア</button> -->
             <div class="management">
+                <p if="errors.length">
+                    <ul>
+                        <li v-for="error in errors" v-bind:key="error" id="error">{{ error}}</li>
+                    </ul>
+                </p>
                 <div class="search-frame">
                 <div class="row row1">
                     <label class="col-sm-1 col-form-label">発売号</label>
@@ -18,6 +23,7 @@
                     <label class="col-sm-1 col-form-label">親カテゴリ</label>
                     <div class="col-sm-2">
                         <select v-model="search.parent_id" @change="selectParentCategory()">
+                            <option></option>
                             <option v-for="parent_category in parent_categories" :key="parent_category.id" 
                             :value="parent_category.id">{{parent_category.name}}</option>
                         </select>
@@ -25,17 +31,18 @@
                     <label class="col-sm-1 col-form-label">子カテゴリ</label>
                     <div class="col-sm-2">
                         <select v-model="search.children_id">
+                            <option></option>
                             <option v-for="children_category in children_categories" :key="children_category.id" 
                             :value="children_category.id">{{children_category.name}}</option>
                         </select>
                     </div>
-                    <p class="col-sm-2 title-margin">3件 / 3件</p>
+                    <p class="col-sm-2 title-margin">{{ this.page }}件 / {{ this.numberOfPages }}件</p>
                 </div>
                 <div class="row row2">
                     <label class="col-sm-1 col-form-label">ステタース</label>
                     <div class="col-sm-2">
                         <select v-model="search.status">
-                            <option selected>すべて</option>
+                            <option></option>
                             <option>公開</option>
                             <option>非公開</option>
                             <option>下書き</option>
@@ -51,7 +58,7 @@
                     </div>
                 </div>
             </div>
-          <div class="article-management row">
+            <div class="article-management row">
             <div class="col-md-1 article-col1">
                 <div class="row">
                    <div class="col-md-12">＃</div>
@@ -77,10 +84,10 @@
                 </div>
             </div>
           </div>
-          <div class="article-content-management row" v-for="(article, index) in articles" :key="article.id" :index="index">
+          <div class="article-content-management row" v-for="(article, index) in displayArticles" :key="article.id" :index="index">
             <div class="col-md-1 article-col1">
                 <div class="row">
-                   <div class="col-md-12">{{index+1}}</div>
+                   <div class="col-md-12">{{index+1+(page*perPage)-perPage}}</div>
                 </div>
             </div>
             <div class="col-md-8 artilce-col2">
@@ -114,11 +121,11 @@
             </div>
           </div>
         <ul class="pagination">
-          <li class="page-item"><a class="page-link previous" href="#">前</a></li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-tem"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link next" href="#">次</a></li>
+          <li class="page-item" v-if="page != 1" @click="page--"><a class="page-link previous" href="#">前</a></li>
+          <li class="page-item" v-for="pageNumber in pages" :key="pageNumber" @click="page = pageNumber">
+            <a class="page-link" href="#">{{pageNumber}}</a>
+          </li>
+          <li class="page-item" @click="page++" v-if="page < pages.length"><a class="page-link next" href="#">次</a></li>
         </ul>
          <!-- Modal confrim delete article  -->
         <div class="modal fade" id="article-delete" tabindex="-1" role="dialog" aria-labelledby="Title" aria-hidden="true">
@@ -148,7 +155,7 @@
                     </div>
                     <div class="modal-body" id="article-body" v-html="article.content"></div>
                     <div class="modal-footer" id="article-footer">
-                        <div><strong>作成者：</strong>{{ article.author }} | <strong>成日:</strong> {{ customFormatDate(article.created_at) }}</div>
+                        <p><strong>作成者：</strong>{{ article.author }} | <strong>成日:</strong> {{ customFormatDate(article.created_at) }}</p>
                     </div>
                 </div>
             </div>
@@ -188,6 +195,12 @@ export default {
             release_date: '',
             parent_id: '',
             children_id: '',
+            // pagination
+            page: 1,
+            perPage: '',
+            pages: [],
+            numberOfPages: '',
+            errors: []
         }
     },
     computed: {
@@ -195,32 +208,62 @@ export default {
         getParentCategory() { return this.$store.getters.getParentCategory },
         getChildrenCategory() { return this.$store.getters.getChildrenCategory },
         getReleaseNumberDate() { return this.$store.getters.getReleaseNumberDate },
+        displayArticles(){
+            return this.paginate(this.articles)
+        }
+    },
+    watch: {
+        articles(){
+            this.setPages()
+        }
     },
     created() {
         // fetch articles
-        this.$store.dispatch('fetchArticles')
-        .then((response)=> {
-            this.articles = this.getArticles
-        }).catch((e) => {
-            console.log(e)
-        })
-        // this.searchArticles()
+        this.fetchArticles()
          // fetch release_date from release number
         this.$store.dispatch('fetchReleaseNumberDate')
         .then((response)=> {
             this.release_number_date = this.getReleaseNumberDate
-        }).catch((e) => {
-            console.log(e)
+        }).catch((error) => {
+            this.errors.push(error.response.data.error.message)
         })
         // fetch parent category
         this.$store.dispatch('fetchParentCategory')
         .then((response)=> {
             this.parent_categories = this.getParentCategory
-        }).catch((e) => {
-            console.log(e)
+        }).catch((error) => {
+            this.errors.push(error.response.data.error.message)
         })
     },
     methods: {
+        fetchArticles(){
+            this.$store.dispatch('fetchArticles')
+            .then((response)=> {
+                this.articles = this.getArticles.articles
+                this.perPage = this.getArticles.perpage
+            }).catch((error) => {
+                this.errors.push(error.response.data.error.message)
+            })
+        },
+        setPages(){
+            this.pages.length = 0
+            let numberOfPages = Math.ceil(this.articles.length / this.perPage);
+            this.pages.length = 0
+            // console.log("+ So trang hien tai " + numberOfPages)
+            // console.log("So index hien tai " + this.pages.length)
+            this.numberOfPages = numberOfPages
+            for (let index = 1; index <= numberOfPages; index++) {
+                this.pages.push(index);
+            }
+            // console.log("so index sau " + this.pages.length)
+        },
+        paginate(articles) {
+            let page = this.page;
+            let perPage = this.perPage;
+            let from = (page * perPage) - perPage;
+            let to = (page * perPage);
+            return articles.slice(from, to);
+        },
         customFormatDate(date) {
             return moment(date).format('YYYY年MM月DD日号');
         },
@@ -237,18 +280,17 @@ export default {
                 this.article = response.data.article
                 this.article.index = index+1
                 this.article.author = response.data.user
-            }).catch((e) => {
-                console.log('Loi lay du lieu')
+            }).catch((error) => {
+                this.errors.push(error.response.data.error.message)
             })
         },
-        
         removeArticle(article){
             axios.delete('v1/admin/articles/' + article.id)
             .then(response => {
                 this.articles.splice(this.articles.indexOf(article), 1)
                 $("#categoryparent").modal('hide');
-                }).catch((e) => {
-                console.log('Loi xoa')
+                }).catch((error) => {
+                this.errors.push(error.response.data.error.message)
             })
         },
         // load category con theo category cha
@@ -256,8 +298,8 @@ export default {
             this.$store.dispatch('fetchChildrenCategory', this.search.parent_id)
             .then((response)=> {
                 this.children_categories = this.getChildrenCategory
-            }).catch((e) => {
-                console.log(e)
+            }).catch((error) => {
+                 this.errors.push(error.response.data.error.message)
             })
         },
         // searchArticles(){
@@ -283,7 +325,7 @@ export default {
                 this.articles = response.data.articles
             })
             .catch((error) => {
-                console.log(error);
+                 this.errors.push(error.response.data.error.message)
             })
         },
         clearSearch(){
@@ -294,7 +336,7 @@ export default {
             this.search.keyword = ''
             this.$store.dispatch('fetchArticles')
             .then((response)=> {
-                this.articles = this.getArticles
+                this.articles = this.getArticles.articles
             }).catch((e) => {
                 console.log(e)
             })
@@ -439,6 +481,10 @@ export default {
         background-color: #d1d1d1;
     }
     /* modal popup */
+    .modal-dialog {
+        min-height: calc(100vh - 60px);
+        justify-content: center;
+    }
     .modal-footer{
         border-top: 0;
         padding: 3rem;
@@ -494,13 +540,11 @@ export default {
         font-weight: bold;
         margin-left: 0px;
     }
-    #article-footer div{
+    #article-footer p{
         border: 1px solid #000000;
         box-sizing: border-box;
-        width: 500px;
+        width: 450px;
         height: 40px;
         padding: 7px 0px 6px 10px;  
-        text-align: left;
-        margin-left: -100px;
     }
 </style>

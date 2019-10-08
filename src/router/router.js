@@ -17,6 +17,7 @@ import ArticleManagement from "./../components/articles/Management"
 import CreateArticle from "./../components/articles/Create"
 import UpdateArticle from "./../components/articles/Update"
 import UserAdminManagement from "./../components/user_admin/Management"
+import Settings from "./../components/settings/Settings"
 import NotfoundPage from "./../views/404page.vue"
 import store from "./../store/index.js"
 
@@ -116,6 +117,12 @@ const routes = [
                 alias: 'user_admin',
                 name: 'user_admin',
                 component: UserAdminManagement,
+            },
+            {
+                path: 'setting',
+                alias: 'setting',
+                name: 'setting',
+                component: Settings
             }
             
         ],

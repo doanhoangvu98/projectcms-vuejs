@@ -206,7 +206,7 @@ export default {
         },
         afterComplete(file) {
             this.form.file = file
-            console.log(this.form)
+            // console.log(this.form)
         },
         validateArticle(){
             if(!this.form.title){
@@ -321,7 +321,7 @@ export default {
     }
     #article-content{
         margin-left: 20px;
-        padding-bottom: 100px;
+        /* padding-bottom: 100px; */
     }
     .ck.ck-editor {
         width: 100%;

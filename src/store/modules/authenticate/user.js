@@ -37,8 +37,9 @@ export default {
         isLoggedIn: state => !!localStorage.getItem("token"),
         token: state => state.token,
         status: state => state.status,
-        role: state => state.role,//
-        isSuperAdmin_Admin: state => state.role == 'superadmin' || state.role == 'admin',
+        role: state => state.role,
+        isSuperAdmin: state => state.role == 'superadmin' ,
+        isAdmin: state => state.role == 'admin',
         isEditor: state => state.role == 'editor',
         isContributor: state => state.role == 'contributor',
     },
@@ -46,14 +47,13 @@ export default {
         login({ commit }, user) {
             return new Promise((resolve, reject) => {
                 commit('auth_request')
-                axios.post('users/sign_in', user) // data => user
+                axios.post('users/sign_in', user)
                     .then(response => {
                         const token = response.data.token
                         const role = response.data.role
                         localStorage.setItem('token', token);
                         localStorage.setItem('role', role);
                         axios.defaults.headers.common['Authorization'] = token
-                        //console.log(token)
                         commit('auth_success', token, user, role)
                         resolve(response)
                     })
@@ -67,12 +67,12 @@ export default {
         logout({ commit }) {
             return new Promise((resolve, reject) => {
                 commit('logout');
-                console.log('Dang logout')
+                // console.log('Dang logout')
                 axios.get('users/sign_out')
                     .then(response => {
                         localStorage.clear();
                         delete axios.defaults.headers.common['Authorization']
-                        console.log("Logout thanh cong")
+                        // console.log("Logout thanh cong")
                         resolve();
                     })
                     .catch(error => {

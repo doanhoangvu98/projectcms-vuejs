@@ -3,7 +3,7 @@
     <div class="container-fluid">
         <h4 class="mt-4 text-left">発売号一覧管理</h4>
         <router-link to="/dashboard/category/parent" class="btn btn-primary" id="addParent">新規カテゴリ登録</router-link>
-        <router-link to="/dashboard/category/child" class="btn btn-primary" id="addChild">新規カテゴリ登録</router-link>
+        <router-link to="/dashboard/category/child" class="btn btn-primary" id="addChild">新子カテゴリ登録</router-link>
         <div class="management">
             <div class="row">
                 <div class="category-parent category">

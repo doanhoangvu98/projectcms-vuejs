@@ -130,7 +130,7 @@ export default {
             return new Promise((resolve, reject) => {
                 axios.get('v1/admin/articles')
                     .then(response => {
-                        commit('change_articles', response.data.articles)
+                        commit('change_articles', response.data)
                         resolve()
                     })
                     .catch(error => {

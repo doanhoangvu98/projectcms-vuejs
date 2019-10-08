@@ -47,7 +47,8 @@ export default {
             return new Promise((resolve, reject) => {
                 axios.get('v1/admin/user_admin')
                     .then(response => {
-                        commit('change_user_admin', response.data.user_admin)
+                        // commit('change_user_admin', response.data.user_admin)
+                        commit('change_user_admin', response.data)
                         resolve()
                     })
                     .catch(error => {
