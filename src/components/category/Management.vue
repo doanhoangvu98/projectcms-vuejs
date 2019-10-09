@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="category-parent category">
                     <p class="category-parent">親カテゴリ</p>
-                    <table class="table table-bordered">
+                    <table class="table category-table">
                         <thead>
                         </thead>
                         <tbody>
@@ -46,7 +46,7 @@
                 <p class="space"></p>
                 <div class="category-child category">
                     <p class="category-child">子カテゴリ</p>
-                    <table class="table table-bordered">
+                    <table class="table category-table">
                         <thead>
                         </thead>
                         <tbody>
@@ -105,12 +105,12 @@ export default {
     }).catch((e) => {
       console.log('Loi lay du lieu')
     })
-    axios.get('v1/admin/category/children').then((response)=> {
-      this.category_children = response.data.category_children
-      console.log(response)
-    }).catch((e) => {
-      console.log('Loi lay du lieu')
-    })
+    // axios.get('v1/admin/category/children').then((response)=> {
+    //   this.category_children = response.data.category_children
+    //   console.log(response)
+    // }).catch((e) => {
+    //   console.log('Loi lay du lieu')
+    // })
   },
   methods: {
     setChildCategory(category_child){
@@ -177,11 +177,11 @@ export default {
   #addChild{
     margin-left: 10px;
   }
-  .table{
+  .category-table{
       margin-top: 30px;
       border: 1px solid #000000;
   }
-  .table tr {
+  .category-table tr {
       border: 2px solid #000000;  
   }
   .table-title{
@@ -218,10 +218,10 @@ export default {
   .management{
     padding: 80px 5px;
   }
-  .table{
+  .category-table{
      border: 1px solid #5b9bd5;
   }
-  .table td{
+  .category-table td{
     vertical-align: middle;
     border: 0px;
     padding: 2px 10px;

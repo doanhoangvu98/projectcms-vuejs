@@ -10,54 +10,54 @@
                         <li v-for="error in errors" v-bind:key="error" id="error">{{ error}}</li>
                     </ul>
                 </p>
-                <div class="search-frame">
-                <div class="row row1">
-                    <label class="col-sm-1 col-form-label">発売号</label>
-                    <div class="col-sm-2">
-                         <select v-model="search.release_number" class="form-control">
-                            <option></option>
-                            <option v-for="release_date in release_number_date" :key="release_date.id" 
-                            :value="release_date.id">{{customFormatDate(release_date.name)}}</option>
-                        </select>
+                <div class="article-search-frame">
+                    <div class="row row1">
+                        <label class="col-sm-1 col-form-label">発売号</label>
+                        <div class="col-sm-2">
+                            <select v-model="search.release_number" class="form-control">
+                                <option></option>
+                                <option v-for="release_date in release_number_date" :key="release_date.id" 
+                                :value="release_date.id">{{customFormatDate(release_date.name)}}</option>
+                            </select>
+                        </div>
+                        <label class="col-sm-1 col-form-label">親カテゴリ</label>
+                        <div class="col-sm-2">
+                            <select v-model="search.parent_id" @change="selectParentCategory()">
+                                <option></option>
+                                <option v-for="parent_category in parent_categories" :key="parent_category.id" 
+                                :value="parent_category.id">{{parent_category.name}}</option>
+                            </select>
+                        </div>
+                        <label class="col-sm-1 col-form-label">子カテゴリ</label>
+                        <div class="col-sm-2">
+                            <select v-model="search.children_id">
+                                <option></option>
+                                <option v-for="children_category in children_categories" :key="children_category.id" 
+                                :value="children_category.id">{{children_category.name}}</option>
+                            </select>
+                        </div>
+                        <p class="col-sm-2 title-margin">{{ this.page }}件 / {{ this.numberOfPages }}件</p>
                     </div>
-                    <label class="col-sm-1 col-form-label">親カテゴリ</label>
-                    <div class="col-sm-2">
-                        <select v-model="search.parent_id" @change="selectParentCategory()">
-                            <option></option>
-                            <option v-for="parent_category in parent_categories" :key="parent_category.id" 
-                            :value="parent_category.id">{{parent_category.name}}</option>
-                        </select>
+                    <div class="row row2">
+                        <label class="col-sm-1 col-form-label">ステタース</label>
+                        <div class="col-sm-2">
+                            <select v-model="search.status">
+                                <option></option>
+                                <option>公開</option>
+                                <option>非公開</option>
+                                <option>下書き</option>
+                            </select>
+                        </div>
+                        <label for="inputKeyword" class="col-sm-1 col-form-label">キワード</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="article-keyword" placeholder="結果内容の入力" v-model="search.keyword">
+                        </div>
+                        <label for="inputPassword" class="col-sm-1 col-form-label"></label>
+                        <div class="col-sm-2">
+                            <button type="button" class="btn btn-primary" id="article-search" @click="searchArticles()">検索</button>
+                        </div>
                     </div>
-                    <label class="col-sm-1 col-form-label">子カテゴリ</label>
-                    <div class="col-sm-2">
-                        <select v-model="search.children_id">
-                            <option></option>
-                            <option v-for="children_category in children_categories" :key="children_category.id" 
-                            :value="children_category.id">{{children_category.name}}</option>
-                        </select>
-                    </div>
-                    <p class="col-sm-2 title-margin">{{ this.page }}件 / {{ this.numberOfPages }}件</p>
                 </div>
-                <div class="row row2">
-                    <label class="col-sm-1 col-form-label">ステタース</label>
-                    <div class="col-sm-2">
-                        <select v-model="search.status">
-                            <option></option>
-                            <option>公開</option>
-                            <option>非公開</option>
-                            <option>下書き</option>
-                        </select>
-                    </div>
-                    <label for="inputKeyword" class="col-sm-1 col-form-label">キワード</label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control" id="inputKeyword" placeholder="結果内容の入力" v-model="search.keyword">
-                    </div>
-                    <label for="inputPassword" class="col-sm-1 col-form-label"></label>
-                    <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" id="btnsearch" @click="searchArticles()">検索</button>
-                    </div>
-                </div>
-            </div>
             <div class="article-management row">
             <div class="col-md-1 article-col1">
                 <div class="row">
@@ -347,9 +347,6 @@ export default {
 
 <style>
     /* article list */
-    .col-sub {
-        padding-top: 10px;
-    }
     .article-text{
         text-align: center;
     }
@@ -376,8 +373,9 @@ export default {
     .col-sub{
         border-right: 2px solid #336da0;
         margin: 0 auto;
+        padding-top: 15px;
     }
-    .search-frame select{
+    .article-search-frame select{
         width: 200px;
         height: 35px;
     }
@@ -393,11 +391,12 @@ export default {
         padding-top: 0px;
         background-color: #b3c4d3;
     }
-    #btnsearch{
+    #article-search{
         background-color: #f7f2b9;
         width: 200px;
+        border: 2px solid #336da0;
     }
-    .search-frame select, #inputKeyword{
+    .article-search-frame select, #inputKeyword{
         background-color: #d1d1d1;
         border: 2px solid #336da0;
         border-radius: 0%;
@@ -406,6 +405,15 @@ export default {
         text-align: center;
         margin: auto;
     }
+    #article-keyword{
+        background-color: #d1d1d1;
+        border: 2px solid #336da0;
+        border-radius: 0%;
+        color: #000000;
+        width: 200px;
+        text-align: center;
+        margin: 0 auto;
+     }
     p.title-margin{
         padding-top: 15px;
     }
@@ -430,9 +438,9 @@ export default {
     .management{
         padding: 80px 5px;
     }
-    .search-frame{
+    .article-search-frame{
         width: 100%;
-        height: 120px;
+        height: 125px;
         background-color:#eff2f1;
         border: 2px solid #5b9bd5;
     }

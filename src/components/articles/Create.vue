@@ -97,7 +97,7 @@
                 </div>
                 <div class="row btnArticle">
                     <button type="button" class="btn btn-primary" id="addArticle" @click="addArticle()">保存</button>
-                    <button type="button" class="btn btn-secondary" id="backArticle">キャンセル</button>
+                    <button type="button" class="btn btn-secondary" id="backArticle" @click="$router.go(-1)">キャンセル</button>
                 </div>
             </form>
         </div>

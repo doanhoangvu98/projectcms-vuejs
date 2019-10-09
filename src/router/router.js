@@ -18,6 +18,7 @@ import CreateArticle from "./../components/articles/Create"
 import UpdateArticle from "./../components/articles/Update"
 import UserAdminManagement from "./../components/user_admin/Management"
 import Settings from "./../components/settings/Settings"
+import MemberManagement from "./../components/member/Management"
 import NotfoundPage from "./../views/404page.vue"
 import store from "./../store/index.js"
 
@@ -117,6 +118,12 @@ const routes = [
                 alias: 'user_admin',
                 name: 'user_admin',
                 component: UserAdminManagement,
+            },
+            {
+                path: 'member',
+                alias: 'member',
+                name: 'member',
+                component: MemberManagement
             },
             {
                 path: 'setting',

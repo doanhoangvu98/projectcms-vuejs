@@ -10,13 +10,13 @@
             <li v-for="error in errors" v-bind:key="error" id="error">{{ error }}</li>
           </ul>
         </p>
-        <table class="table table-bordered">
+        <table class="table release-table">
           <thead>
           </thead>
           <tbody v-for="(release,index) in displayReleaseNumber" :key="release.id" :release="release" :index="index">
             <tr>
               <td class="colstyle1 id">{{index+1+(page*perPage)-perPage}}</td>
-              <td scope="row" class="colstyle2"><h5>{{ customFormatDate(release.name)  }}</h5></td>
+              <td scope="row" class="colstyle2"><h5>{{ customFormatDate(release.name)}}</h5></td>
               <td class="colstyle2">
                 <div class="imagerelease">
                   <img :src=release.image>
@@ -167,10 +167,13 @@ export default {
   .management{
     padding: 80px 5px;
   }
-  .table{
-     border: 1px solid #5b9bd5;
+  .release-table{
+     border: 2px solid #5b9bd5;
   }
-  .table td{
+  .release-table tr{
+     border: 2px solid #5b9bd5;
+  }
+  .release-table td{
     vertical-align: middle;
     border: 0px;
     padding: 2px 10px;

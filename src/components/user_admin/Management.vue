@@ -9,7 +9,7 @@
                     <li v-for="error in errors" v-bind:key="error" id="error">{{ error}}</li>
                 </ul>
             </p>
-            <div class="search-frame">
+            <div class="user-search-frame">
                 <div class="row row1">
                     <label class="col-sm-1 col-form-label">ジューザ名</label>
                     <div class="col-sm-2">
@@ -40,7 +40,7 @@
                     </div>
                     <label for="inputPassword" class="col-sm-1 col-form-label"></label>
                     <div class="col-sm-2">
-                        <button type="button" class="btn btn-primary" id="btnsearch" @click="searchUserAdmin()">検索</button>
+                        <button type="button" class="btn btn-primary" id="user-admin-search" @click="searchUserAdmin()">検索</button>
                     </div>
                     <div class="col-sm-3">
                     </div>
@@ -333,7 +333,7 @@ export default {
             .then(response => {
                 this.user_admin.splice(this.user_admin.indexOf(u), 1)
                 $("#deleteuseradmin").modal('hide');
-                }).catch((e) => {
+                }).catch((error) => {
                this.errors.push(error.response.data.error.message)
             })
         },
@@ -431,13 +431,14 @@ export default {
     .article-text{
         text-align: center;
     }
-    .search-frame select{
+    .user-search-frame select{
         width: 200px;
         height: 35px;
     }
-    #editUser, #deleteUser{
+    #editUser, #deleteUser, #addUser{
         margin-right: 10px;
         width: 100px;
+        padding-top: 0px;
     }
     #saveUser, #cancelEdit{
         width: 100px;
@@ -466,20 +467,22 @@ export default {
         float: right;
         margin-top: 10px;
     }
-    #btnsearch{
+    #user-admin-search{
         border: 2px solid #336da0;
         border-radius: 0%;
         background-color: #f7f2b9;
         width: 200px;
+        margin-left: -150px;
     }
-    .search-frame select, #inputKeyword{
+    .user-search-frame select, #inputKeyword{
         background-color: #d1d1d1;
         border: 2px solid #336da0;
         border-radius: 0%;
         color: #000000;
         width: 200px;
         text-align: center;
-        margin: auto;
+        /* margin: auto; */
+        margin-left: -150px;
     }
     p.title-margin{
         padding-top: 15px;
@@ -505,9 +508,9 @@ export default {
     .management{
         padding: 80px 5px;
     }
-    .search-frame{
+    .user-search-frame{
         width: 100%;
-        height: 120px;
+        height: 125px;
         background-color:#eff2f1;
         border: 2px solid #5b9bd5;
     }

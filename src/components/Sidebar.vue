@@ -18,9 +18,9 @@
         <a href="#" class="list-group-item list-group-item-action" id="imagesidebar">
           <i class="fa fa-caret-right" aria-hidden="true"></i> 画像管理
         </a>
-        <a href="#" class="list-group-item list-group-item-action" id="member">
-          <i class="fa fa-caret-right" aria-hidden="true"></i> メンバー一覧管理
-        </a>
+        <router-link to='/dashboard/member' class="list-group-item list-group-item-action" 
+          id="member"><i class="fa fa-caret-right" aria-hidden="true"></i> メンバー一覧管理
+        </router-link>
         <router-link to='/dashboard/setting' class="list-group-item list-group-item-action" 
           id="setting"><i class="fa fa-caret-right" aria-hidden="true"></i> 設定管理
         </router-link>
@@ -90,6 +90,9 @@ export default {
 </script>
 
 <style>
+  .list-group-item{
+    color: #8e8b8b;
+  }
   .router-link-exact-active {
    color: #000000;
   }
