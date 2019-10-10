@@ -1,13 +1,18 @@
 <template>
   <div id="page-content-wrapper">
     <div class="container-fluid">
-        <h4 class="mt-4 text-left">発売号一覧管理</h4>
+        <h4 class="mt-4 text-left category-title">発売号一覧管理</h4>
         <router-link to="/dashboard/category/parent" class="btn btn-primary" id="addParent">新規カテゴリ登録</router-link>
         <router-link to="/dashboard/category/child" class="btn btn-primary" id="addChild">新子カテゴリ登録</router-link>
+        <p if="errors.length">
+          <ul>
+            <li v-for="error in errors" v-bind:key="error" id="error">{{ error}}</li>
+          </ul>
+        </p>
         <div class="management">
             <div class="row">
                 <div class="category-parent category">
-                    <p class="category-parent">親カテゴリ</p>
+                    <div class="category-parent-title">親カテゴリ</div>
                     <table class="table category-table">
                         <thead>
                         </thead>
@@ -45,7 +50,7 @@
                 </div>
                 <p class="space"></p>
                 <div class="category-child category">
-                    <p class="category-child">子カテゴリ</p>
+                    <div class="category-child-title">子カテゴリ</div>
                     <table class="table category-table">
                         <thead>
                         </thead>
@@ -94,23 +99,23 @@ export default {
       category_parents: [],
       category_children: [],
       error: '',
-      selected: null
+      selected: null,
+      errors: []
     }
   },
   // mounted() {
     created(){
-    axios.get('v1/admin/category/parents').then((response)=> {
-      this.category_parents = response.data.category_parents
-      console.log(response)
-    }).catch((e) => {
-      console.log('Loi lay du lieu')
-    })
-    // axios.get('v1/admin/category/children').then((response)=> {
-    //   this.category_children = response.data.category_children
-    //   console.log(response)
-    // }).catch((e) => {
-    //   console.log('Loi lay du lieu')
-    // })
+      axios.get('v1/admin/category/parents').then((response)=> {
+        this.category_parents = response.data.category_parents
+      }).catch((e) => {
+        console.log('Loi lay du lieu')
+      })
+      // axios.get('v1/admin/category/children').then((response)=> {
+      //   this.category_children = response.data.category_children
+      //   console.log(response)
+      // }).catch((e) => {
+      //   console.log('Loi lay du lieu')
+      // })
   },
   methods: {
     setChildCategory(category_child){
@@ -124,10 +129,9 @@ export default {
       axios.delete('v1/admin/category/parents/' + category_p.id)
       .then(response => {
         this.category_parents.splice(this.category_parents.indexOf(category_p), 1)
-        // window.location.reload()
         $("#categoryparent").modal('hide');
       }).catch((e) => {
-      console.log('Loi xoa')
+        console.log('Loi xoa')
       })
     },
     removeChildCategory(category_c){
@@ -156,6 +160,9 @@ export default {
 </script>
 
 <style>
+  .category-title{
+    padding-bottom: 30px;
+  }
   .space {
       -ms-flex: 0 0 8.333333%;
       -webkit-box-flex: 0;
@@ -170,19 +177,28 @@ export default {
   .category-parent, .category-child{
       font-weight: bold;
       font-size: 20px;
+      width: 49%;
+  }
+   .category-parent-title, .category-child-title{
+      padding-top: 10px;
+      font-weight: bold;
+      font-size: 20px;
+      color: #000000;
   }
   #addParent, #addChild{
     float: left;
+    color: #ffffff;
+    border: 2px solid #2f6391;
   }
   #addChild{
     margin-left: 10px;
   }
   .category-table{
-      margin-top: 30px;
-      border: 1px solid #000000;
+    margin-top: 30px;
+    border: 1px solid #000000;
   }
   .category-table tr {
-      border: 2px solid #000000;  
+      border: 3px solid #000000;  
   }
   .table-title{
     padding-top: 20px;
@@ -243,11 +259,13 @@ export default {
     width: 150px;
   }
   .btn-deleteCategory{
-      margin-left: 10px;
-      background-color:  #fce1cf;
+    margin-left: 10px;
+    background-color:  #fce1cf;
+    border: 2px solid #2f6391 !important;
   }
   .btn-updateCategory{
-      background-color: #d7edea;;
+    background-color: #d7edea;
+    border: 2px solid #2f6391 !important;
   }
   .pagination li{
     border: 1px solid #5b9bd5;

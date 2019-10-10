@@ -405,27 +405,25 @@ export default {
     }
     .user-table th{
         background-color: #d1d1d1;
-        border: 1px solid #336da0;
+        border: 1px solid #2f6391;
     }
-    .user-table tr{
-        border: none;
+    .user-table tr td{
+        border: 1px solid #2f6391;
     }
     .user-table td{
         position: relative;
-        border: 1px solid #336da0;
         height: 50px;
     }
     .user-table td input, .user-table td select{
-    position: absolute;
-    display: block;
-    top:0;
-    left:0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    border: none;
-    box-sizing: border-box;
-    text-indent: 10px;
+        position: absolute;
+        display: block;
+        top:0;
+        left:0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        text-indent: 10px;
     }
     /* article list */
     .article-text{
@@ -435,14 +433,16 @@ export default {
         width: 200px;
         height: 35px;
     }
-    #editUser, #deleteUser, #addUser{
+    #editUser, #deleteUser, #addUser, #saveUser, #cancelEdit{
         margin-right: 10px;
-        width: 100px;
+        width: 110px;
         padding-top: 0px;
+        border: 2px solid #2f6391;
     }
     #saveUser, #cancelEdit{
-        width: 100px;
-        margin-right: 10px;
+        width: 110px;
+        margin-right: 5px;
+        border: 1px solid #2f6391;
     }
     #cancelEdit{
         background-color: #d1d1d1;
@@ -512,12 +512,7 @@ export default {
         width: 100%;
         height: 125px;
         background-color:#eff2f1;
-        border: 2px solid #5b9bd5;
-    }
-    .article-management{
-        width: 100%;
-        background-color:#eff2f1;
-        border: 1px solid #5b9bd5;
+        border: 2px solid #2f6391;
     }
     .user-management{
         background-color:#eff2f1;

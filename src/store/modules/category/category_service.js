@@ -6,26 +6,26 @@ Vue.use(Vuex)
 export default {
     actions: {
         createParentCategory(commit, data) {
-            console.log(data)
+            // console.log(data)
             return new Promise((resolve, reject) => {
                 axios.post('v1/admin/category/parents/', data)
                 .then(response => {
-                    resolve(response)
+                    resolve()
                 })
                 .catch(error => {
-                    console.log("Ko them duoc")
+                    reject(error)
                 })
             })
         },
         createChildCategory(commit, data) {
-            console.log(data)
+            // console.log(data)
             return new Promise((resolve, reject) => {
                 axios.post('v1/admin/category/children/', data)
                     .then(response => {
                         resolve(response)
                     })
                     .catch(error => {
-                        console.log("Ko them duoc")
+                        reject(error)
                     })
             })
         },

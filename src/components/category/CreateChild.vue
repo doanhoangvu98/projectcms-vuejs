@@ -32,8 +32,8 @@
             </div>
           </div>
           <div class="form-group btnform">
-          <button type="button" class="btn btn-primary addCategory" @click="addCategoryChild()">保存</button>
-          <button type="button" class="btn btn-secondary cancelCategory" @click="$router.go(-1)">キャンセル</button>
+          <button type="button" class="btn btn-primary addCategory category-btn" @click="addCategoryChild()">保存</button>
+          <button type="button" class="btn btn-secondary cancelCategory category-btn" @click="$router.go(-1)">キャンセル</button>
           </div>
         </form>
       </div>
@@ -101,6 +101,9 @@ export default {
 </script>
 
 <style>
+  .category-btn{
+    border: 2px solid #336da0 !important;
+  }
   .custom-control.custom-checkbox{padding-left: 0;}
 
   label.custom-control-label {

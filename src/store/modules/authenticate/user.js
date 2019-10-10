@@ -8,7 +8,8 @@ export default {
         token: localStorage.getItem('token') || '',
         status: '',
         user: {},
-        role: localStorage.getItem('role') || '',
+        // role: localStorage.getItem('role') || '',//
+        role: '',
     },
     mutations: {
         auth_request(state) {
@@ -18,6 +19,9 @@ export default {
             state.status = 'success'
             state.token = token
             state.user = user
+            state.role = role
+        },
+        set_role(state, role){
             state.role = role
         },
         auth_error(state) {
@@ -37,11 +41,14 @@ export default {
         isLoggedIn: state => !!localStorage.getItem("token"),
         token: state => state.token,
         status: state => state.status,
-        role: state => state.role,
+        // role: state => state.role,//
         isSuperAdmin: state => state.role == 'superadmin' ,
         isAdmin: state => state.role == 'admin',
         isEditor: state => state.role == 'editor',
         isContributor: state => state.role == 'contributor',
+        getUserRole(state){
+            return state.role
+        }
     },
     actions: {
         login({ commit }, user) {
@@ -52,10 +59,11 @@ export default {
                         const token = response.data.token
                         const role = response.data.role
                         localStorage.setItem('token', token);
-                        localStorage.setItem('role', role);
+                        // localStorage.setItem('role', role);
                         axios.defaults.headers.common['Authorization'] = token
                         commit('auth_success', token, user, role)
-                        resolve(response)
+                        commit('set_role', role)
+                        resolve()
                     })
                     .catch(error => {
                         commit('auth_error')

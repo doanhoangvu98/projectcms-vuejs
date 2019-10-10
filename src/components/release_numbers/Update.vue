@@ -34,9 +34,9 @@
               <label>形容</label>
               <textarea class="form-control" rows="3" placeholder="この発売号は天然内容です。" v-model="form.description"></textarea>
             </div>
-            <button id="update" type="button" class="btn btn-primary" @click="editRelease()">保存</button>
+            <button id="update-release" type="button" class="btn btn-primary" @click="editRelease()">保存</button>
             <!-- <button id="cancel" type="submit" class="btn btn-danger">キャンセル</button> -->
-            <router-link to="/dashboard/release" class="btn btn-danger" id="cancel">キャンセル</router-link>
+            <router-link to="/dashboard/release" class="btn btn-danger" id="cancel-release">キャンセル</router-link>
           </form>
         </div>
       </div>
@@ -128,6 +128,11 @@ export default {
 }
 </script>
 <style>
+  #update-release, #cancel-release{
+    float: left;
+    margin: 4px;
+    border: 2px solid #2f6391;
+  }
   #update, #cancel, label{
     float: left;
     margin: 4px;

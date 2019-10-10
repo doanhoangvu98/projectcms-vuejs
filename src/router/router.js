@@ -19,6 +19,8 @@ import UpdateArticle from "./../components/articles/Update"
 import UserAdminManagement from "./../components/user_admin/Management"
 import Settings from "./../components/settings/Settings"
 import MemberManagement from "./../components/member/Management"
+import ImageManagement from "./../components/images/Management"
+import UploadImage from "./../components/images/Create.vue"
 import NotfoundPage from "./../views/404page.vue"
 import store from "./../store/index.js"
 
@@ -43,6 +45,7 @@ const routes = [
                 component: ReleaseManagement,
                 alias: 'release',
                 meta: {
+                    requiresAuth: true,
                     releaseAuth: true
                 }
             },
@@ -52,7 +55,8 @@ const routes = [
                 component: CreateRelease,
                 alias: 'new',
                 meta: {
-                    releaseCreateAuth: true
+                    requiresAuth: true,
+                    releaseAuth: true
                 }
             },
             {
@@ -61,7 +65,8 @@ const routes = [
                 component: UpdateRelease,
                 alias: 'edit',
                 meta: {
-                    releaseCreateAuth: true
+                    requiresAuth: true,
+                    releaseAuth: true
                 }
             },
             {
@@ -70,66 +75,127 @@ const routes = [
                 alias: 'category',
                 component: CategoryManagement,
                 meta: {
-                    categoryAuth: true
+                    requiresAuth: true,
+                    categoryAuth: true,
                 }
             },
             {
                 path: 'category/parent/edit/:id',
                 name: 'category_parent_edit',
                 alias: 'category_parent_edit',
-                component: UpdateCategoryParent
+                component: UpdateCategoryParent,
+                meta: {
+                    requiresAuth: true,
+                    categoryAuth: true,
+                }
             },
             {
                 path: 'category/child/edit/:id',
                 name: 'category_child_edit',
                 alias: 'category_child_edit',
-                component: UpdateCategoryChild
+                component: UpdateCategoryChild,
+                meta: {
+                    requiresAuth: true,
+                    categoryAuth: true,
+                }
             },
             {
                 path: 'category/parent',
                 name: 'category_parent',
                 component: CreateParent,
+                meta: {
+                    requiresAuth: true,
+                    categoryAuth: true,
+                }
             },
             {
                 path: 'category/child',
                 name: 'category_child',
-                component: CreateChild
+                component: CreateChild,
+                meta: {
+                    requiresAuth: true,
+                    categoryAuth: true,
+                }
             },
             {
                 path: 'article',
                 name: 'article',
                 alias: 'article',
-                component: ArticleManagement
+                component: ArticleManagement,
+                meta: {
+                    requiresAuth: true,
+                    articleAuth: true,
+                }
             },
             {
                 path: 'article/new',
                 name: 'article_new',
                 alias: 'article_new',
-                component: CreateArticle
+                component: CreateArticle,
+                meta: {
+                    requiresAuth: true,
+                    articleAuth: true,
+                }
             },
             {
                 path: 'article/edit/:id',
                 alias: 'article_edit',
                 name: 'article_edit',
                 component: UpdateArticle,
+                meta: {
+                    requiresAuth: true,
+                    articleAuth: true,
+                }
             },
             {
                 path: 'user_admin',
                 alias: 'user_admin',
                 name: 'user_admin',
                 component: UserAdminManagement,
+                meta: {
+                    requiresAuth: true,
+                    useradminAuth: true,
+                }
             },
             {
                 path: 'member',
                 alias: 'member',
                 name: 'member',
-                component: MemberManagement
+                component: MemberManagement,
+                meta: {
+                    requiresAuth: true,
+                    memberAuth: true
+                }
             },
             {
                 path: 'setting',
                 alias: 'setting',
                 name: 'setting',
-                component: Settings
+                component: Settings,
+                meta: {
+                    requiresAuth: true,
+                    settingsAuth: true,
+                }
+            },
+            {
+                path: 'img',
+                alias: 'img',
+                name: 'img',
+                component: ImageManagement,
+                meta: {
+                    requiresAuth: true,
+                    imageAuth: true,
+                }
+            },
+            {
+                path: 'img/upload',
+                alias: 'img_upload',
+                name: 'img_upload',
+                component: UploadImage,
+                meta: {
+                    requiresAuth: true,
+                    imageAuth: true,
+                }
             }
             
         ],
@@ -146,29 +212,26 @@ const router = new VueRouter({
 })
 
 export default router
-
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (store.getters.isLoggedIn && store.getters.status) {
-            if (to.meta.releaseAuth) {
-                const auth = store.getters.role
-                if (auth == 'superadmin' || auth == 'admin' || auth == 'editor') {
+            const auth = store.getters.getUserRole
+            if (to.meta.articleAuth || to.meta.imageAuth) {
+                if (auth == 'superadmin' || auth == 'admin' || auth == 'editor' || auth == 'contributor') {
                     next()
                 } else {
                     next('/dashboard')
                 }
             }
-            if (to.meta.releaseCreateAuth) {
-                const auth = store.getters.role
-                if (auth == 'superadmin' || auth == 'admin' || auth == 'editor') {
+            if (to.meta.useradminAuth || to.meta.memberAuth || to.meta.settingsAuth) {
+                if (auth == 'superadmin') {
                     next()
                 } else {
                     next('/dashboard')
                 }
             }
-            if (to.meta.categoryAuth) {
-                const auth = store.getters.role
-                if (auth == 'superadmin' || auth == 'admin') {
+            if (to.meta.releaseAuth || to.meta.categoryAuth) {
+                if (auth == 'superadmin' || auth == 'admin' || auth == 'editor') {
                     next()
                 } else {
                     next('/dashboard')

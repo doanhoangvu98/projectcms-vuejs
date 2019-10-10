@@ -16,7 +16,7 @@
                             <div class="form-group row">
                                 <label for="inputTitle" class="col-sm-2 col-form-label">タイトル</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="inputTitle" v-model="form.title">
+                                    <input type="text" class="form-control input-article" id="inputTitle" v-model="form.title">
                                 </div>
                             </div>
                             <!-- <div class="form-group row">
@@ -33,7 +33,7 @@
                                     <!-- <datepicker name="release_date" class="form-control" input-class="input-class" 
                                     v-model="form.release_date" :format="customFormatter" :language="language" 
                                     id="inputReleaseDate"></datepicker> --> 
-                                    <select v-model="form.release_date" class="form-control">
+                                    <select v-model="form.release_date" class="form-control input-article">
                                         <option v-for="release_date in release_number_date" :key="release_date.id" 
                                         :value="release_date.id">{{customFormatDate(release_date.name)}}</option>
                                     </select>
@@ -258,6 +258,12 @@ export default {
 </script>
 
 <style>
+    .input-article{
+        border-radius: 0%;
+    }
+    .quillWrapper{
+        width: 100%;
+    }
     .btnArticle{
         padding-top: 40px;
     }
@@ -287,6 +293,7 @@ export default {
     .imageArticle{
         padding-top: 40px;
         padding-bottom: 10px;
+        margin-left: 13%;
     }
     .title-drop-create{
         margin-left: 10px;

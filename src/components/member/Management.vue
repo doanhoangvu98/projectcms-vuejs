@@ -115,7 +115,7 @@
                 <div class="col-md-3 member-col3">
                     <div class="row">
                     <div class="col-md-12">
-                        <button type="button" class="btn btn-info" id="addMember" @click="addMember()">登録</button>
+                        <button type="button" class="btn btn-info member-btn" id="addMember" @click="addMember()">登録</button>
                     </div>
                     </div>
                 </div>
@@ -180,13 +180,13 @@
                     <div class="row">
                     <div class="col-md-12">
                         <div class="view">
-                            <button type="button" class="btn btn-info update-btn-article" @click="editData(member)">変更</button>
-                            <button type="button" class="btn btn-danger delete-btn-article" 
+                            <button type="button" class="btn btn-info update-btn-article member-btn" @click="editData(member)">変更</button>
+                            <button type="button" class="btn btn-danger delete-btn-article member-btn" 
                                 data-toggle="modal" data-target="#delete-member" @click="setMember(member)">削除</button>
                         </div>
                         <div class="edit">
-                            <button type="button" class="btn btn-info" id="saveMember" @click="saveMember(member)">保存</button>
-                            <button type="button" class="btn btn-danger" id="cancelEdit" @click="cancelEditMember()">キャンセル</button>
+                            <button type="button" class="btn btn-info member-btn" id="saveMember" @click="saveMember(member)">保存</button>
+                            <button type="button" class="btn btn-danger member-btn" @click="cancelEditMember()">キャンセル</button>
                         </div>
                     </div>
                     </div>
@@ -299,7 +299,7 @@ export default {
         this.fetchMembers()
     },
     methods: {
-         customFormatDate(date) {
+        customFormatDate(date) {
             return moment(date).format('YYYY年MM月DD日号');
         },
         fetchMembers(){
@@ -478,6 +478,9 @@ export default {
     input.indexUserAdmin{
         text-align: center;
     }
+    .member-btn{
+        border: 2px solid #336da0 !important;
+    }
     .user-table{
         margin-top: 0px;
         margin-bottom: 0px;
@@ -494,7 +497,7 @@ export default {
         margin-right: 10px;
         width: 100px;
     }
-    #saveMember, #cancelEdit{
+    #cancelEdit{
         width: 100px;
         margin-right: 10px;
     }
@@ -513,6 +516,9 @@ export default {
     }
     #btnBack{
         float: left;
+    }
+    #saveMember{
+        background-color: rgb(186, 226, 203)
     }
     #btnBack, #btnNext{
         border: 2px solid #336da0;

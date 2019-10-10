@@ -3,7 +3,7 @@
     <div class="container-fluid">
       <h4 class="mt-4 text-left">発売号一覧管理</h4>
       <!-- <button id="add" type="submit" class="btn btn-primary">新規登録</button> -->
-      <router-link to="/dashboard/release/new" class="btn btn-primary" id="add">新規登録</router-link>
+      <router-link to="/dashboard/release/new" class="btn btn-primary" id="addRelease">新規登録</router-link>
       <div class="management">
         <p if="errors.length">
           <ul>
@@ -15,20 +15,20 @@
           </thead>
           <tbody v-for="(release,index) in displayReleaseNumber" :key="release.id" :release="release" :index="index">
             <tr>
-              <td class="colstyle1 id">{{index+1+(page*perPage)-perPage}}</td>
+              <td class="colstyle1 image-index">{{index+1+(page*perPage)-perPage}}</td>
               <td scope="row" class="colstyle2"><h5>{{ customFormatDate(release.name)}}</h5></td>
               <td class="colstyle2">
-                <div class="imagerelease">
+                <div class="image-release">
                   <img :src=release.image>
                 </div>
               </td>
               <td class="colstyle2">
                 <div class="pull-bottom" style="margin-top: 2%; vertical-align: middle;">
-                  <button id="delete" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#releaseModal" @click="setReleaseNumber(release)">削除</button>
+                  <button id="delete-release" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#releaseModal" @click="setReleaseNumber(release)">削除</button>
                 </div>
                 <div class="pull-top">
                   <!-- <button type="submit" class="btn btn-info" @click="moveToEditPage(release)">変更</button> -->
-                  <router-link :to="{name: 'release_edit', params: {id: release.id}}" class="btn btn-info">
+                  <router-link :to="{name: 'release_edit', params: {id: release.id}}" class="btn btn-info" id="edit-release">
                     変更
                   </router-link>
                 </div>
@@ -41,7 +41,7 @@
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">発売号の削除</h5>
+                <h5 class="modal-title delete-border">発売号の削除</h5>
               </div>
               <div class="modal-body">
                 この発売号を削除してよろしいですか。
@@ -56,8 +56,9 @@
         <!-- end popup -->
         <ul class="pagination">
           <li class="page-item" v-if="page != 1" @click="page--"><a class="page-link previous" href="#">前</a></li>
-          <li class="page-item" v-for="pageNumber in pages" :key="pageNumber" @click="page = pageNumber">
-            <a class="page-link" href="#">{{pageNumber}}</a>
+          <li class="page-item" v-for="pageNumber in pages" :key="pageNumber" @click="page = pageNumber" 
+            v-bind:class="{'active':(page == pageNumber)}">
+            <a class="page-link page-link-body">{{pageNumber}}</a>
           </li>
           <li class="page-item" @click="page++" v-if="page < pages.length"><a class="page-link next" href="#">次</a></li>
         </ul>
@@ -139,8 +140,14 @@ export default {
 </script>
 
 <style>
-  #add{
+  #delete-release, #edit-release{
+    border: 2px solid #2f6391;
+    margin-top: 5px;
+  }
+  #addRelease{
     float: left;
+    color: #ffffff;
+    border: 2px solid #2f6391;
   }
   #update, #delete{
     margin: 5px;
@@ -171,7 +178,7 @@ export default {
      border: 2px solid #5b9bd5;
   }
   .release-table tr{
-     border: 2px solid #5b9bd5;
+    border: 3px solid #2f6391;
   }
   .release-table td{
     vertical-align: middle;
@@ -184,7 +191,7 @@ export default {
   .colstyle2{
     background-color: #f2f2f2;
   }
-  .imagerelease img{
+  .image-release img{
     background: #f5f5f5;
     width: 450px;
     height: 150px;
@@ -209,7 +216,7 @@ export default {
     padding-top: 20px;
   }
   .pagination li{
-    border: 1px solid #5b9bd5;
+    border: 3px solid #2f6391;
     border-radius: 0%;
   }
   .previous, .next{

@@ -8,6 +8,7 @@ import articleservice from "./modules/article/article_service"
 import useradminservice from "./modules/user_admin/user_admin.service"
 import settingservice from "./modules/settings/settings.service"
 import memberservice from "./modules/member/member.service"
+import imageservice from "./modules/images/image.service"
 import createPersistedState from 'vuex-persistedstate'
 import * as Cookies from 'js-cookie'
 
@@ -21,7 +22,8 @@ export default new Vuex.Store({
         articleservice,
         useradminservice,
         settingservice,
-        memberservice
+        memberservice,
+        imageservice
     },
     plugins: [
         createPersistedState({

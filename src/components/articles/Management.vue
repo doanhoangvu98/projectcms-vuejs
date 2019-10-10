@@ -2,7 +2,7 @@
    <div id="page-content-wrapper">
     <div class="container-fluid">
         <h4 class="mt-4 text-left">記事一覧</h4>
-        <router-link to="/dashboard/article/new" class="btn btn-primary" id="add">新規記事追加</router-link>
+        <router-link to="/dashboard/article/new" class="btn btn-primary article-btn" id="add">新規記事追加</router-link>
         <!-- <button type="button" @click="clearSearch()" class="btn btn-primary" id="clear-search">クリア</button> -->
             <div class="management">
                 <p if="errors.length">
@@ -102,7 +102,7 @@
                     <div class="col-md-2 col-sub">{{ customFormatDate(article.updated_date) }}</div>
                     <div class="col-md-2 col-sub">{{ customFormatDate(article.created_date) }}</div>
                     <div class="col-md-4 col-sub">
-                        <button type="button" class="btn content-btn-article" 
+                        <button type="button" class="btn content-btn-article article-btn"
                             data-toggle="modal" data-target="#show-article" @click="showArticle(article, index)">表示</button>
                     </div>
                 </div>
@@ -111,10 +111,10 @@
                  <div class="row">
                    <div class="col-md-12">
                         <!-- <button type="button" class="btn btn-info update-btn-article">変更</button> -->
-                        <router-link :to="{name: 'article_edit', params: {id: article.id}}" class="btn btn-info update-btn-article">
+                        <router-link :to="{name: 'article_edit', params: { id: article.id }}" class="btn btn-info update-btn-article article-btn">
                         変更
                         </router-link>
-                        <button type="button" class="btn btn-danger delete-btn-article" 
+                        <button type="button" class="btn btn-danger delete-btn-article article-btn" 
                             data-toggle="modal" data-target="#article-delete">削除</button>
                    </div>
                 </div>
@@ -122,8 +122,9 @@
           </div>
         <ul class="pagination">
           <li class="page-item" v-if="page != 1" @click="page--"><a class="page-link previous" href="#">前</a></li>
-          <li class="page-item" v-for="pageNumber in pages" :key="pageNumber" @click="page = pageNumber">
-            <a class="page-link" href="#">{{pageNumber}}</a>
+          <li class="page-item" v-for="pageNumber in pages" :key="pageNumber" @click="page = pageNumber"
+           v-bind:class="{'active':(page == pageNumber)}">
+            <a class="page-link page-link-body">{{pageNumber}}</a>
           </li>
           <li class="page-item" @click="page++" v-if="page < pages.length"><a class="page-link next" href="#">次</a></li>
         </ul>
@@ -151,11 +152,11 @@
                 <div class="modal-content" id="article-content">
                     <div class="modal-header" id="article-header">
                         <h5 class="modal-title" id="article-title">#{{ article.index }}: {{ article.title }}</h5>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">閉じる</button>
+                        <button type="button" class="btn btn-danger article-btn" data-dismiss="modal">閉じる</button>
                     </div>
                     <div class="modal-body" id="article-body" v-html="article.content"></div>
                     <div class="modal-footer" id="article-footer">
-                        <p><strong>作成者：</strong>{{ article.author }} | <strong>成日:</strong> {{ customFormatDate(article.created_at) }}</p>
+                        <div class="note-footer"><strong>作成者：</strong>{{ article.author }} | <strong>成日:</strong> {{ customFormatDate(article.created_at) }}</div>
                     </div>
                 </div>
             </div>
@@ -347,6 +348,9 @@ export default {
 
 <style>
     /* article list */
+    .article-btn{
+        border: 2px solid #336da0 !important;
+    }
     .article-text{
         text-align: center;
     }
@@ -548,11 +552,17 @@ export default {
         font-weight: bold;
         margin-left: 0px;
     }
+    #article-footer{
+        min-width: 850px;
+    }
     #article-footer p{
         border: 1px solid #000000;
         box-sizing: border-box;
         width: 450px;
         height: 40px;
         padding: 7px 0px 6px 10px;  
+    }
+    .note-footer{
+        margin-right: 35%;
     }
 </style>
