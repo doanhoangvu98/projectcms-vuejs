@@ -16,7 +16,7 @@
             </div>
             <div class="form-group style1">
               <vue-dropzone ref="myVueDropzone" id="upload" :options="dropzoneOptions"  
-                @vdropzone-complete="afterComplete"></vue-dropzone>
+                @vdropzone-complete="afterComplete" @vdropzone-removed-file="removeFile"></vue-dropzone>
             </div>
             <div class="form-group" id="description">
               <label>形容</label>
@@ -51,7 +51,7 @@ export default {
         message6: "形容が500文字以下み有効です。" // dai hon 500 ki tu
       },
      form: {
-        date_release: '2019-04-12',
+        date_release: '',
         file: '',
         description: '',
       },
@@ -68,8 +68,10 @@ export default {
       dropzoneOptions: {
         url: 'https://httpbin.org/post',
         uploadMultiple: false,
+        addRemoveLinks: true,
         thumbnailWidth: 150,
-        maxFilesize: 30,
+        // maxFilesize: 10,
+        maxFiles: 1,
         paramName: "upload",
         dictDefaultMessage: "<i class='fa fa-upload'></i><br>ここに画像ドラッグ",
         headers: { "My-Awesome-Header": "header value" },
@@ -79,6 +81,11 @@ export default {
   components: {
      vueDropzone: vue2Dropzone,
      Datepicker
+  },
+  created(){
+    var dayOfWeek = 5; //friday
+    var curr = new Date;
+    this.form.date_release = curr.setDate(curr.getDate() + (dayOfWeek + 7 - curr.getDay()) % 7);
   },
   methods: {
     validateForm(){
@@ -96,6 +103,9 @@ export default {
       }
       if(this.form.description.length > 500){
         this.errors.push(this.errormessage.message6)
+      }
+      if (this.form.file && this.form.file.type != "image/jpg" && this.form.file.type != "image/png") {
+        this.errors.push(this.errormessage.message5)
       }
     },
     // format_date(value){
@@ -118,6 +128,9 @@ export default {
       this.form.file = file
       console.log(this.form)
     },
+    removeFile(){
+      this.form.file = ''
+    }
   },
 }
 </script>

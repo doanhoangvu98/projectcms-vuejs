@@ -32,8 +32,8 @@
             </div>
           </div>
           <div class="form-group btnform">
-          <button type="button" class="btn btn-primary addCategory" @click="editChildCategory()">保存</button>
-          <button type="button" class="btn btn-secondary cancelCategory" @click="$router.go(-1)">キャンセル</button>
+          <button type="button" class="btn btn-primary addCategory category-btn" @click="editChildCategory()">保存</button>
+          <button type="button" class="btn btn-secondary cancelCategory category-btn" @click="$router.go(-1)">キャンセル</button>
           </div>
         </form>
       </div>
@@ -104,7 +104,7 @@ export default {
         axios.patch('v1/admin/category/children/'+ this.form.id, this.form).then(response=>{
           this.$router.push({ name: "category"})
         }).catch(error=>{
-          this.errors = error.response.data;
+          this.errors.push(error.response.data.error.message)
         });
       }
     }

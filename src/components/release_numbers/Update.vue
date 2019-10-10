@@ -25,7 +25,7 @@
                 <div class="col-6">
                   <div class="form-group style1">
                     <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"  
-                      @vdropzone-complete="afterComplete"></vue-dropzone>
+                      @vdropzone-complete="afterComplete" @vdropzone-removed-file="removeFile"></vue-dropzone>
                   </div>
                 </div>
               </div>
@@ -34,9 +34,9 @@
               <label>形容</label>
               <textarea class="form-control" rows="3" placeholder="この発売号は天然内容です。" v-model="form.description"></textarea>
             </div>
-            <button id="update" type="button" class="btn btn-primary" @click="editRelease()">保存</button>
+            <button id="update-release" type="button" class="btn btn-primary" @click="editRelease()">保存</button>
             <!-- <button id="cancel" type="submit" class="btn btn-danger">キャンセル</button> -->
-            <router-link to="/dashboard/release" class="btn btn-danger" id="cancel">キャンセル</router-link>
+            <router-link to="/dashboard/release" class="btn btn-danger" id="cancel-release">キャンセル</router-link>
           </form>
         </div>
       </div>
@@ -78,8 +78,10 @@ export default {
       dropzoneOptions: {
         url: 'https://httpbin.org/post',
         uploadMultiple: false,
+        addRemoveLinks: true,
         thumbnailWidth: 150,
-        maxFilesize: 30,
+        // maxFilesize: 10,
+        maxFiles: 1,
         paramName: "upload",
         dictDefaultMessage: "<i class='fa fa-upload'></i><br>ここに画像ドラッグ",
         headers: { "My-Awesome-Header": "header value" },
@@ -106,6 +108,12 @@ export default {
       if(this.form.description.length > 500){
         this.errors.push(this.errormessage.message6)
       }
+      if(this.form.file.size > 10000000){
+        this.errors.push(this.errormessage.message4)
+      }
+      if (this.form.file && this.form.file.type != "image/jpg" && this.form.file.type != "image/png") {
+        this.errors.push(this.errormessage.message5)
+      }
     },
     beforeMount(){
       this.afterComplete(file)
@@ -124,10 +132,18 @@ export default {
       this.form.file = file
       console.log(this.form)
     },
+    removeFile(){
+      this.form.file = ''
+    }
   },
 }
 </script>
 <style>
+  #update-release, #cancel-release{
+    float: left;
+    margin: 4px;
+    border: 2px solid #2f6391;
+  }
   #update, #cancel, label{
     float: left;
     margin: 4px;

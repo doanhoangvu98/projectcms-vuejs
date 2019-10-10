@@ -46,7 +46,7 @@ import VueSweetalert from './../services/SweetAlert'
       }
     },
     methods: {
-      validateLogin(){
+      validateLogin(){ // switch
         if(!this.form.email){
             this.errors.push(this.errorMessage.message2)
         }

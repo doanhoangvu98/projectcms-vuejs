@@ -16,7 +16,7 @@
                             <div class="form-group row">
                                 <label for="inputTitle" class="col-sm-2 col-form-label">タイトル</label>
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" id="inputTitle" v-model="form.title">
+                                    <input type="text" class="form-control input-article" id="inputTitle" v-model="form.title">
                                 </div>
                             </div>
                             <!-- <div class="form-group row">
@@ -33,7 +33,7 @@
                                     <!-- <datepicker name="release_date" class="form-control" input-class="input-class" 
                                     v-model="form.release_date" :format="customFormatter" :language="language" 
                                     id="inputReleaseDate"></datepicker> --> 
-                                    <select v-model="form.release_date" class="form-control">
+                                    <select v-model="form.release_date" class="form-control input-article">
                                         <option v-for="release_date in release_number_date" :key="release_date.id" 
                                         :value="release_date.id">{{customFormatDate(release_date.name)}}</option>
                                     </select>
@@ -78,7 +78,6 @@
                                     <p class="title-drop-create">子カテゴリ</p>
                                     <select v-model="form.status">
                                             <option selected>公開</option>
-                                            <option>公開</option>
                                             <option>非公開</option>
                                             <option>下書き</option>
                                     </select>
@@ -89,7 +88,7 @@
                             <div class="row">
                                 <div class="imageArticle">
                                 <vue-dropzone ref="myVueDropzone" id="upload" :options="dropzoneOptions"  
-                                    @vdropzone-complete="afterComplete"></vue-dropzone>
+                                    @vdropzone-complete="afterComplete" @vdropzone-removed-file="removeFile"></vue-dropzone>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +138,8 @@ export default {
                 url: 'https://httpbin.org/post',
                 uploadMultiple: false,
                 thumbnailWidth: 150,
-                maxFilesize: 30,
+                addRemoveLinks: true,
+                // maxFilesize: 30,
                 paramName: "upload",
                 dictDefaultMessage: "<i class='fa fa-upload'></i><br>ここに画像ドラッグ",
                 headers: { "My-Awesome-Header": "header value" },
@@ -208,6 +208,9 @@ export default {
             this.form.file = file
             // console.log(this.form)
         },
+        removeFile(){
+            this.form.file = ''
+        },
         validateArticle(){
             if(!this.form.title){
                 this.errors.push(this.errrorMessage.message1)
@@ -233,6 +236,9 @@ export default {
             if(!this.form.children_id){
                 this.errors.push(this.errrorMessage.message8)
             }
+            if (this.form.file && this.form.file.type != "image/jpg" && this.form.file.type != "image/png") {
+                this.errors.push(this.errrorMessage.message9)
+            }
         },
         addArticle(){
             this.errors = []
@@ -252,12 +258,21 @@ export default {
             }).catch((e) => {
                 console.log(e)
             })
+        },
+        removeFile(){
+            this.form.file = ''
         }
     }
 }
 </script>
 
 <style>
+    .input-article{
+        border-radius: 0%;
+    }
+    .quillWrapper{
+        width: 100%;
+    }
     .btnArticle{
         padding-top: 40px;
     }
@@ -287,6 +302,7 @@ export default {
     .imageArticle{
         padding-top: 40px;
         padding-bottom: 10px;
+        margin-left: 13%;
     }
     .title-drop-create{
         margin-left: 10px;

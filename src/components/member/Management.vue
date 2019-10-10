@@ -115,7 +115,7 @@
                 <div class="col-md-3 member-col3">
                     <div class="row">
                     <div class="col-md-12">
-                        <button type="button" class="btn btn-info" id="addMember" @click="addMember()">登録</button>
+                        <button type="button" class="btn btn-info member-btn" id="addMember" @click="addMember()">登録</button>
                     </div>
                     </div>
                 </div>
@@ -180,13 +180,13 @@
                     <div class="row">
                     <div class="col-md-12">
                         <div class="view">
-                            <button type="button" class="btn btn-info update-btn-article" @click="editData(member)">変更</button>
-                            <button type="button" class="btn btn-danger delete-btn-article" 
+                            <button type="button" class="btn btn-info update-btn-article member-btn" @click="editData(member)">変更</button>
+                            <button type="button" class="btn btn-danger delete-btn-article member-btn" 
                                 data-toggle="modal" data-target="#delete-member" @click="setMember(member)">削除</button>
                         </div>
                         <div class="edit">
-                            <button type="button" class="btn btn-info" id="saveMember" @click="saveMember(member)">保存</button>
-                            <button type="button" class="btn btn-danger" id="cancelEdit" @click="cancelEditMember()">キャンセル</button>
+                            <button type="button" class="btn btn-info member-btn" id="saveMember" @click="saveMember(member)">保存</button>
+                            <button type="button" class="btn btn-danger member-btn" @click="cancelEditMember(member)">キャンセル</button>
                         </div>
                     </div>
                     </div>
@@ -248,6 +248,7 @@ export default {
                 address: '',
                 status: '',
             },
+            beforeEditMemberCache: [],
             customFormatter: 'yyyy年MM月dd日号',
             language:{
                 language: 'Japanese', 
@@ -299,7 +300,7 @@ export default {
         this.fetchMembers()
     },
     methods: {
-         customFormatDate(date) {
+        customFormatDate(date) {
             return moment(date).format('YYYY年MM月DD日号');
         },
         fetchMembers(){
@@ -405,6 +406,7 @@ export default {
         },
         removeMember(m){
             // console.log(m.id)
+            this.errors = []
             axios.delete('v1/admin/members/' + m.id)
             .then(response => {
                 this.members.splice(this.members.indexOf(m), 1)
@@ -414,10 +416,11 @@ export default {
             })
         },
         editData(member){
-            this.beforEditCache = member
+            this.beforeEditMemberCache = Object.assign({}, member);
             this.editedMember = member
         },
-        cancelEditMember(){
+        cancelEditMember(member){
+            Object.assign(member, this.beforeEditMemberCache);
             this.editedMember = null
         },
         saveMember(member){
@@ -478,9 +481,15 @@ export default {
     input.indexUserAdmin{
         text-align: center;
     }
+    .member-btn{
+        border: 2px solid #336da0 !important;
+    }
     .user-table{
         margin-top: 0px;
         margin-bottom: 0px;
+    }
+    #addMember{
+        /* margin-top: 28px; */
     }
     /* article list */
     .article-text{
@@ -493,17 +502,18 @@ export default {
     #editUser, #deleteUser{
         margin-right: 10px;
         width: 100px;
+        padding: 0;
     }
-    #saveMember, #cancelEdit{
+    /* #cancelEdit{
         width: 100px;
         margin-right: 10px;
-    }
-    #cancelEdit{
+    } */
+    /* #cancelEdit{
         background-color: #d1d1d1;
-    }
-    #saveUser{
+    } */
+    /* #saveUser{
         background-color: #bae2cb;
-    }
+    } */
     p.user_page{
         margin-top: 13px;
     }
@@ -513,6 +523,9 @@ export default {
     }
     #btnBack{
         float: left;
+    }
+    #saveMember{
+        background-color: rgb(186, 226, 203)
     }
     #btnBack, #btnNext{
         border: 2px solid #336da0;
@@ -525,14 +538,14 @@ export default {
         border: 2px solid #336da0;
         border-radius: 0%;
         background-color: #f7f2b9;
-        width: 200px;
+        width: 150px;
     }
     .member-search-frame select, #inputKeyword{
         background-color: #d1d1d1;
         border: 2px solid #336da0;
         border-radius: 0%;
         color: #000000;
-        width: 200px;
+        width: 150px;
         text-align: center;
         margin: auto;
     }
@@ -562,7 +575,7 @@ export default {
     }
     .member-search-frame{
         width: 100%;
-        height: 125px;
+        /* height: 125px; */
         background-color:#eff2f1;
         border: 1px solid #336da0;
         margin-bottom: 20px;
@@ -585,11 +598,12 @@ export default {
         width: 100%;
         background-color:#eff2f1;
         margin-left: 2px;
-        min-height: 120px;
+        /* min-height: 120px; */
     }
     .row1 label{
         float: left;
         color: #000000;
+        padding-right: 0;
         padding-bottom: 10px;
         font-weight: normal;
     }
@@ -703,13 +717,13 @@ export default {
         padding-top: 30px;
     }
     .member-col3 button{
-        width: 150px;
+        width: 100px;
         margin-left: 5px;
     }
     .member-col2-row{
         border-top: 1px solid #336da0;
         border-bottom: 1px solid #336da0;
-        height: 60px;
+        min-height: 50px;
     }
      /* tao member */
      .member-content-management .input1, .member-content-management select{

@@ -12,35 +12,35 @@
                 <div class="row">
                     <label for="releasepage" class="col-sm-2 col-form-label">発売号一覧のページ</label>
                     <div class="col-sm-1">
-                        <input type="text" class="form-control" id="releasepage" v-model="form.page_num_release">
+                        <input type="number" min="0" @input="filterInput" class="form-control" id="releasepage" v-model="form.page_num_release">
                     </div>
                     <p class="col-sm-2 labelPage">/ 行数</p>
                 </div>
                 <div class="row">
                     <label for="useradminpage" class="col-sm-2 col-form-label">アドミンジューザのページ</label>
                     <div class="col-sm-1">
-                        <input type="text" class="form-control" id="useradminpage" v-model="form.page_num_user_admin">
+                        <input type="number" min="0" @input="filterInput" class="form-control" id="useradminpage" v-model="form.page_num_user_admin">
                     </div>
                     <p class="col-sm-2 labelPage">/ 行数</p>
                 </div>
                  <div class="row">
                     <label for="articlepage" class="col-sm-2 col-form-label">記事一覧のページ</label>
                     <div class="col-sm-1">
-                        <input type="text" class="form-control" id="articlepage" v-model="form.page_num_article">
+                        <input type="number" min="0" @input="filterInput" class="form-control" id="articlepage" v-model="form.page_num_article">
                     </div>
                     <p class="col-sm-2 labelPage">/ 行数</p>
                 </div>
                 <div class="row">
                     <label for="memberpage" class="col-sm-2 col-form-label">メンバーのページ</label>
                     <div class="col-sm-1">
-                        <input type="text" class="form-control" id="memberpage" v-model="form.page_num_member">
+                        <input type="number" min="0" @input="filterInput" class="form-control" id="memberpage" v-model="form.page_num_member">
                     </div>
                     <p class="col-sm-2 labelPage">/ 行数</p>
                 </div>
                 <div class="row">
                     <label for="imagepage" class="col-sm-2 col-form-label">画像のページ</label>
                     <div class="col-sm-1">
-                        <input type="text" class="form-control" id="imagepage" v-model="form.page_num_image">
+                        <input type="number" min="0" @input="filterInput" class="form-control" id="imagepage" v-model="form.page_num_image">
                     </div>
                     <p class="col-sm-2 labelPage">/ 行数</p>
                 </div>
@@ -104,14 +104,17 @@ export default {
       this.errors = []
       this.validateSettingsPage()
       this.form.id = 1
-      console.log(this.form.id)
+      // console.log(this.form.id)
       if(!this.errors.length){
         this.$store.dispatch('editNumberPage', this.form)
-        .then(()=> console.log("afdaf"))
+        .then(()=> console.log(""))
         .catch((e)=>{
         })
       }
     },
+    filterInput(e){
+      e.target.value = e.target.value.replace(/[^0-9]+/g, '');
+    }
   }
 }
 </script>
@@ -136,7 +139,7 @@ button#saveSettings, button#editSettings{
 .labelPage{
     float: left;
     margin-left: 0px;
-    margin-left: -100px;
+    margin-left: -80px;
     padding-top: 4px;
 }
   #page-content-wrapper {

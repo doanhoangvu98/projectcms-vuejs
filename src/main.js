@@ -16,6 +16,8 @@ import CKEditor from '@ckeditor/ckeditor5-vue';
 import Vue2Editor from "vue2-editor"; //
 import Datepicker from 'vuejs-datepicker';
 import VueSweetalert2 from 'vue-sweetalert2';
+import VueClipboard from 'vue-clipboard2'
+import Toasted from 'vue-toasted';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import Qs from 'qs'//
 import store from "./store/index.js"
@@ -30,6 +32,8 @@ Vue.use(Datepicker)
 Vue.use(VueSweetalert2);
 Vue.use(CKEditor)
 Vue.use(Vue2Editor)
+Vue.use(VueClipboard)
+Vue.use(Toasted)
 Vue.use(Qs)//
 // Vue.use(vue2Dropzone)
 Vue.config.productionTip = false

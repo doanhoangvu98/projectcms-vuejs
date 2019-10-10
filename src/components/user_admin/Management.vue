@@ -129,7 +129,7 @@
                                 </div>
                                 <div class="edit">
                                     <button type="button" class="btn btn-info" id="saveUser" @click="saveUserAdmin(user)">保存</button>
-                                    <button type="button" class="btn btn-danger" id="cancelEdit" @click="cancelEditUser()">キャンセル</button>
+                                    <button type="button" class="btn btn-danger" id="cancelEdit" @click="cancelEditUser(user)">キャンセル</button>
                                 </div>
                             </td>
                         </tr>
@@ -185,6 +185,7 @@ export default {
                 email: '',
                 password: ''
             },
+            beforeEditCache: [],
             // pagination
             page: 1,
             perPage: '',
@@ -259,7 +260,7 @@ export default {
             if(!this.user.username){
                 this.errors.push(this.errorMessage.message1)
             }
-            if(this.user.username && this.user.username.length > 10){
+            if(this.user.username && this.user.username.length > 100){
                 this.errors.push(this.errorMessage.message2)
             }
             if(!this.user.role){
@@ -287,7 +288,7 @@ export default {
             if(!this.editedUser.username){
                 this.errors.push(this.errorMessage.message1)
             }
-            if(this.editedUser.username && this.editedUser.username.length > 10){
+            if(this.editedUser.username && this.editedUser.username.length > 100){
                 this.errors.push(this.errorMessage.message2)
             }
             if(!this.editedUser.role){
@@ -338,10 +339,12 @@ export default {
             })
         },
         editData(user){
-            this.beforEditCache = user
+            this.beforeEditCache = Object.assign({}, user);
+            // console.log(this.beforeEditCache)
             this.editedUser = user
         },
-        cancelEditUser(){
+        cancelEditUser(user){
+            Object.assign(user, this.beforeEditCache);
             this.editedUser = null
         },
         saveUserAdmin(){
@@ -405,27 +408,25 @@ export default {
     }
     .user-table th{
         background-color: #d1d1d1;
-        border: 1px solid #336da0;
+        border: 1px solid #2f6391;
     }
-    .user-table tr{
-        border: none;
+    .user-table tr td{
+        border: 1px solid #2f6391;
     }
     .user-table td{
         position: relative;
-        border: 1px solid #336da0;
         height: 50px;
     }
     .user-table td input, .user-table td select{
-    position: absolute;
-    display: block;
-    top:0;
-    left:0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    border: none;
-    box-sizing: border-box;
-    text-indent: 10px;
+        position: absolute;
+        display: block;
+        top:0;
+        left:0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        text-indent: 10px;
     }
     /* article list */
     .article-text{
@@ -435,33 +436,43 @@ export default {
         width: 200px;
         height: 35px;
     }
-    #editUser, #deleteUser, #addUser{
+    #editUser, #deleteUser, #addUser, #saveUser, #cancelEdit{
         margin-right: 10px;
-        width: 100px;
+        /* width: 70px !important; */
         padding-top: 0px;
+        border: 2px solid #336da0;
     }
-    #saveUser, #cancelEdit{
-        width: 100px;
-        margin-right: 10px;
-    }
-    #cancelEdit{
-        background-color: #d1d1d1;
+    #editUser, #deleteUser, #addUser{
+        width: 70px !important;
+        padding: 0;
     }
     #saveUser{
         background-color: #bae2cb;
+        width: 60px;
+        margin-right: 5px;
+    }
+     #saveUser, #cancelEdit{
+        padding: 0;
+        /* width: 100px; */
+        margin-bottom: 10px;
+    }
+    #cancelEdit{
+        background-color: #d1d1d1;
+        width: 80px;
     }
     p.user_page{
         margin-top: 13px;
     }
     .btnGroupSearch{
         padding-top: 10px;
-        padding-left: 70px;
+        padding-left: 0 !important;
     }
     #btnBack{
         float: left;
     }
     #btnBack, #btnNext{
         border: 2px solid #336da0;
+        width: 120px;
     }
     #clear-search{
         float: right;
@@ -471,18 +482,18 @@ export default {
         border: 2px solid #336da0;
         border-radius: 0%;
         background-color: #f7f2b9;
-        width: 200px;
-        margin-left: -150px;
+        width: 150px;
+        /* margin-left: -150px; */
     }
     .user-search-frame select, #inputKeyword{
-        background-color: #d1d1d1;
+        background-color: #aaa4a4;
         border: 2px solid #336da0;
         border-radius: 0%;
         color: #000000;
-        width: 200px;
+        width: 150px;
         text-align: center;
         /* margin: auto; */
-        margin-left: -150px;
+        /* margin-left: -150px; */
     }
     p.title-margin{
         padding-top: 15px;
@@ -510,14 +521,9 @@ export default {
     }
     .user-search-frame{
         width: 100%;
-        height: 125px;
+        /* height: 125px; */
         background-color:#eff2f1;
-        border: 2px solid #5b9bd5;
-    }
-    .article-management{
-        width: 100%;
-        background-color:#eff2f1;
-        border: 1px solid #5b9bd5;
+        border: 2px solid #2f6391;
     }
     .user-management{
         background-color:#eff2f1;

@@ -26,8 +26,8 @@
             </div>
           </div>
           <div class="form-group btnform">
-          <button type="button" class="btn btn-primary addCategory" @click="addCategoryParent()">保存</button>
-          <button type="button" class="btn btn-secondary cancelCategory" @click="$router.go(-1)">キャンセル</button>
+          <button type="button" class="btn btn-primary addCategory category-btn" @click="addCategoryParent()">保存</button>
+          <button type="button" class="btn btn-secondary cancelCategory category-btn" @click="$router.go(-1)">キャンセル</button>
           </div>
         </form>
       </div>
